@@ -5,16 +5,19 @@ from typing import List
 
 from data import EXPERIENCE, PROFILE, CERTS, SKILLS, EDUCATION, PROJECTS
 
-st.set_page_config(
-    page_title="tkoralewski.online - Tomasz Koralewski Portfolio",
-    layout="wide",
-    page_icon="✨",
-    menu_items={
-        "Get Help": None,
-        "Report a Bug": None,
-        "About": "Portfolio wykonane z użyciem Streamlit.",
-    },
-)
+
+def setup_page():
+    """Setup page"""
+    st.set_page_config(
+        page_title="tkoralewski.online - Tomasz Koralewski Portfolio",
+        layout="wide",
+        page_icon="✨",
+        menu_items={
+            "Get Help": None,
+            "Report a Bug": None,
+            "About": "Portfolio wykonane z użyciem Streamlit.",
+        },
+    )
 
 
 def chips(items: List[str]) -> str:
@@ -159,6 +162,7 @@ def show_certs():
 
 
 def main():
+    setup_page()
     show_side_bar()
 
     left, right = st.columns([3, 1])
@@ -197,6 +201,7 @@ def main():
 
     with certs_tab:
         show_certs()
+
     with about_tab:
         show_about_me()
 
