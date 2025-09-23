@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8501"
+    volumes:
+      - .:/app:cached
+    command: streamlit run main.py --server.runOnSave=true --server.fileWatcherType=poll --server.headless=true
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
