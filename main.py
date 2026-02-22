@@ -9,7 +9,7 @@ from data import EXPERIENCE, PROFILE, CERTS, SKILLS, EDUCATION, PROJECTS
 def setup_page():
     """Setup page"""
     st.set_page_config(
-        page_title="tkoralewski.online - Tomasz Koralewski Portfolio",
+        page_title="tkoralewski - Tomasz Koralewski Portfolio",
         layout="wide",
         page_icon="✨",
         menu_items={
@@ -44,7 +44,7 @@ def collect_all_tech() -> List[str]:
 def show_side_bar():
     """Shows the sidebar content"""
     with st.sidebar:
-        st.title("tkoralewski.online")
+        st.title("tkoralewski")
         st.write(
             "Mam na imię Tomek i lubię rozwiązywać problemy z użyciem technologii."
         )
@@ -132,6 +132,9 @@ def show_projects():
     for project in PROJECTS:
         with st.expander(f"💡 {project.get('title', '')}", expanded=False):
             st.write(f"📄 **Opis:** {project.get('description', '')}")
+            address = project.get("address", "")
+            if address:
+                st.write(f"🌍 **Link:** [{address}]({address})")
             st.write(
                 f"🔧 **Technologie:** {chips(project.get('tech', []))}",
                 unsafe_allow_html=True,

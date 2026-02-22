@@ -17,6 +17,8 @@ PROFILE: Dict[str, str] = {
         "Akeneo",
         "Postman",
         "API OpenAI",
+        "Web Scraping",
+        "Git",
     ],
 }
 
@@ -165,6 +167,11 @@ SKILLS: List[Dict[str, Union[str, int, List[str]]]] = [
         "keywords": ["Excel", "Pivot", "Power Query"],
     },
     {
+        "name": "Git",
+        "level": 60,
+        "keywords": ["GitHub", "Branching", "Merging"],
+    },
+    {
         "name": "Docker",
         "level": 50,
         "keywords": ["Sieci", "Wolumeny", "Docker Compose"],
@@ -207,6 +214,16 @@ CERTS: List[Dict[str, str]] = [
 
 
 PROJECTS: List[Dict[str, Union[str, int]]] = [
+    {
+        "title": "Aplikacja Django do oglądania streamów z wydarzeń sportowych oraz śledzenia wyników na żywo",
+        "description": "Aplikacja umożliwiająca oglądanie streamów z wydarzeń sportowych oraz śledzenie wyników na żywo. Aplikacja została stworzona z użyciem frameworka Django i wykorzystuje API do pobierania danych o wydarzeniach sportowych.",
+        "address": "https://mecze.byst.re/",
+        "tech": ["Python", "Django", "Tailwind CSS", "PostgreSQL"],
+        "photo_urls": [
+            "https://i.ibb.co/B2DxgxQL/Zrzut-ekranu-2026-02-22-103539.png",
+            "https://i.ibb.co/CXnZbhs/Zrzut-ekranu-2026-02-22-1036211.png",
+        ],
+    },
     {
         "title": "Skrypt do wysyłania powiadomień mailowych z API Too Good To Go",
         "description": """Projekt polegający na napisaniu systemu powiadomień z użyciem API aplikacji To Good To Go. Aplikacja pozwala na zarządzanie konfiguracją skryptu z poziomu przeglądarki. Jest hostowana z użyciem Raspberry Pi.""",
