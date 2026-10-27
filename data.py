@@ -1,13 +1,15 @@
-from typing import List, Dict, Union
-
-PROFILE: Dict[str, str] = {
+PROFILE: dict[str, str | list[str]] = {
     "name": "Tomasz Koralewski",
     "role": "Inżynier ds. danych produktowych",
     "location": "Polska, Tarnowskie Góry",
     "email": "tomaszkoralewski1@gmail.com",
     "linkedin": "https://www.linkedin.com/in/tomasz-koralewski-a7233a154/",
     "github": "https://github.com/tomkor96",
+    "newsletter": "https://pythondigest.toadres.pl/",
     "cv_path": "docs/Tomasz_Koralewski_CV.pdf",
+    "tagline": "dane produktowe. automatyzacja. python.",
+    "about": "Mam na imię Tomek i lubię rozwiązywać problemy z użyciem technologii. Na co dzień pobieram, czyszczę i porządkuję dane produktowe dla e-commerce, a po godzinach buduję własne aplikacje — od newslettera o Pythonie po katalog domowej biblioteki.",
+    "status": "Senetic · inżynier ds. danych produktowych",
     "skills": [
         "Python",
         "Analiza danych",
@@ -22,7 +24,7 @@ PROFILE: Dict[str, str] = {
     ],
 }
 
-EDUCATION: List[Dict[str, str]] = [
+EDUCATION: list[dict[str, str]] = [
     {
         "institution": "Uniwersytet Śląski w Katowicach",
         "degree": "Magister",
@@ -53,7 +55,7 @@ EDUCATION: List[Dict[str, str]] = [
 ]
 
 
-EXPERIENCE: List[Dict[str, str]] = [
+EXPERIENCE: list[dict[str, str | list[str]]] = [
     {
         "job_title": "Inżynier ds. danych produktowych",
         "company": "Senetic Global Services",
@@ -97,7 +99,7 @@ EXPERIENCE: List[Dict[str, str]] = [
         "end_date": "2020-12-31",
         "responsibilities": [
             "Pisanie tekstów blogowych oraz tekstów optymalizacyjnych opartych o promocję",
-            "Wykorzystanie słów kluczowych pomagających znaleźć stronę zleceníodawcy poprzez wyszukiwarki",
+            "Wykorzystanie słów kluczowych pomagających znaleźć stronę zleceniodawcy poprzez wyszukiwarki",
         ],
         "tech": ["SEO", "Content Marketing", "Google Analytics"],
     },
@@ -114,7 +116,7 @@ EXPERIENCE: List[Dict[str, str]] = [
             "Szkolenie pracowników w zakresie obsługi systemów IT",
             "Współpraca z zespołem programistów w celu rozwoju systemu do obsługi zleceń",
             "Bieżąca naprawa komputerów, konfiguracja nowych stanowisk",
-            "Pozyskiwanie firm współpracujących w celu likwidacji szkód szybrowych",
+            "Pozyskiwanie firm współpracujących w celu likwidacji szkód szybowych",
         ],
         "tech": ["Python", "MS Power BI", "MS Excel", "Systemy IT"],
     },
@@ -132,7 +134,19 @@ EXPERIENCE: List[Dict[str, str]] = [
 ]
 
 
-SKILLS: List[Dict[str, Union[str, int, List[str]]]] = [
+SKILLS: list[dict[str, str | int | list[str]]] = [
+    {
+        "name": "Claude i Claude Code",
+        "level": 90,
+        "keywords": [
+            "Skille",
+            "Harness",
+            "MCP",
+            "Hooki",
+            "Subagenty",
+            "Workflow CI/CD z agentem",
+        ],
+    },
     {
         "name": "Python",
         "level": 80,
@@ -162,13 +176,8 @@ SKILLS: List[Dict[str, Union[str, int, List[str]]]] = [
         "keywords": ["PostgreSQL", "MySQL", "SQLite", "SQL Server"],
     },
     {
-        "name": "MS Excel",
-        "level": 60,
-        "keywords": ["Excel", "Pivot", "Power Query"],
-    },
-    {
         "name": "Git",
-        "level": 60,
+        "level": 70,
         "keywords": ["GitHub", "Branching", "Merging"],
     },
     {
@@ -178,20 +187,20 @@ SKILLS: List[Dict[str, Union[str, int, List[str]]]] = [
     },
     {
         "name": "Django",
-        "level": 40,
+        "level": 70,
         "keywords": ["MTV", "Django ORM"],
     },
 ]
 
 
-CERTS: List[Dict[str, str]] = [
+CERTS: list[dict[str, str]] = [
     {
         "title": "Data Science Bootcamp w Python",
         "issuer": "Udemy",
         "date": "2024-02-01",
     },
     {
-        "title": "Certyfikat językkowy B2 - język angielski",
+        "title": "Certyfikat językowy B2 - język angielski",
         "issuer": "SPNJO Uniwersytet Śląski",
         "date": "2019-02-01",
     },
@@ -213,33 +222,50 @@ CERTS: List[Dict[str, str]] = [
 ]
 
 
-PROJECTS: List[Dict[str, Union[str, int]]] = [
+PROJECTS: list[dict[str, str | bool | list[str]]] = [
+    {
+        "title": "Python Digest Polska",
+        "description": "Dwutygodniowy newsletter o ekosystemie Pythona po polsku: przegląd artykułów, tutoriali, bibliotek i książek. W selekcji linków i przygotowaniu wstępnych opisów do nich pomaga mi AI, a ostateczny wybór i redakcja należą do mnie. Strona z archiwum wydań, wpisami i wyszukiwarką, zapisy na newsletter oraz wysyłka wydań z panelu administracyjnego.",
+        "address": "https://pythondigest.toadres.pl/",
+        "tech": ["Python", "Django", "PostgreSQL", "Docker", "AI"],
+        "photo_urls": [
+            "static/img/python-digest-strona-glowna.png",
+            "static/img/python-digest-wydanie.png",
+        ],
+        "featured": True,
+    },
+    {
+        "title": "Domowa biblioteka",
+        "description": "Aplikacja PWA do katalogowania domowej kolekcji książek i gier planszowych: miejsca na półkach, skanowanie kodów ISBN/EAN, automatyczne pobieranie metadanych i okładek, wypożyczenia, oceny oraz zapowiedzi wydawnicze z powiadomieniami e-mail.",
+        "address": "https://biblioteczka.toadres.pl/",
+        "tech": ["SvelteKit", "TypeScript", "SQLite", "Tailwind CSS", "Playwright", "Docker"],
+        "featured": True,
+    },
     {
         "title": "Aplikacja Django do oglądania streamów z wydarzeń sportowych oraz śledzenia wyników na żywo",
         "description": "Aplikacja umożliwiająca oglądanie streamów z wydarzeń sportowych oraz śledzenie wyników na żywo. Aplikacja została stworzona z użyciem frameworka Django i wykorzystuje API do pobierania danych o wydarzeniach sportowych.",
         "address": "https://mecze.byst.re/",
         "tech": ["Python", "Django", "Tailwind CSS", "PostgreSQL"],
         "photo_urls": [
-            "https://i.ibb.co/B2DxgxQL/Zrzut-ekranu-2026-02-22-103539.png",
-            "https://i.ibb.co/CXnZbhs/Zrzut-ekranu-2026-02-22-1036211.png",
+            "static/img/zrzut-ekranu-2026-02-22-103539.png",
+            "static/img/zrzut-ekranu-2026-02-22-1036211.png",
         ],
     },
     {
         "title": "Skrypt do wysyłania powiadomień mailowych z API Too Good To Go",
-        "description": """Projekt polegający na napisaniu systemu powiadomień z użyciem API aplikacji To Good To Go. Aplikacja pozwala na zarządzanie konfiguracją skryptu z poziomu przeglądarki. Jest hostowana z użyciem Raspberry Pi.""",
+        "description": """Projekt polegający na napisaniu systemu powiadomień z użyciem API aplikacji Too Good To Go. Aplikacja pozwala na zarządzanie konfiguracją skryptu z poziomu przeglądarki. Jest hostowana z użyciem Raspberry Pi.""",
         "tech": ["Python", "Streamlit", "Raspberry Pi"],
         "photo_urls": [
-            "https://i.ibb.co/cS7XXgnw/Zrzut-ekranu-2025-09-22-220324.png",
-            "https://i.ibb.co/yB0Wn9Rg/Zrzut-ekranu-2025-09-22-215653.png",
+            "static/img/zrzut-ekranu-2025-09-22-220324.png",
+            "static/img/zrzut-ekranu-2025-09-22-215653.png",
         ],
     },
     {
         "title": "Aplikacja do śledzenia cen z funkcją powiadomień mailowych",
-        "description": "Aplikacja umożliwiająca śledzenie zmian cen produktów. Jeżeli cena spada poniżej zadeklarowanej przez użytkownika to wówczas otrzymauje on e-mail z powiadommieniem. Ceny pobierane są ze stron z użyciem web scrapingu.",
+        "description": "Aplikacja umożliwiająca śledzenie zmian cen produktów. Jeżeli cena spada poniżej zadeklarowanej przez użytkownika to wówczas otrzymuje on e-mail z powiadomieniem. Ceny pobierane są ze stron z użyciem web scrapingu.",
         "tech": ["Python", "Streamlit", "PostgreSQL", "Raspberry Pi"],
         "photo_urls": [
-            "https://i.ibb.co/YT46F6Vv/Zrzut-ekranu-2025-09-22-221224.png",
-            "https://i.ibb.co/zW5XXj0H/Zrzut-ekranu-2025-09-23-212622.png",
+            "static/img/zrzut-ekranu-2025-09-22-221224.png",
         ],
     },
     {
@@ -247,8 +273,8 @@ PROJECTS: List[Dict[str, Union[str, int]]] = [
         "description": "Aplikacja umożliwiająca zbieranie informacji na temat podróży, takich jak miejsca, ceny lotów, ceny transportu na miejscu i inne. Aplikacja opiera się o Structured output i Web search z API OpenAI",
         "tech": ["Python", "Streamlit", "OpenAI API", "Raspberry Pi"],
         "photo_urls": [
-            "https://i.ibb.co/NdwBqcnb/Zrzut-ekranu-2025-09-23-212411.png",
-            "https://i.ibb.co/DDfKPdTJ/Zrzut-ekranu-2025-09-23-212151.png",
+            "static/img/zrzut-ekranu-2025-09-23-212411.png",
+            "static/img/zrzut-ekranu-2025-09-23-212151.png",
         ],
     },
     {

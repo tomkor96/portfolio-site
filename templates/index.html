@@ -1,0 +1,185 @@
+{% from "icons.html" import icon %}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ profile.name }} · portfolio</title>
+  <meta name="description" content="{{ profile.name }} — {{ profile.role }}. {{ profile.tagline }}">
+  <meta name="color-scheme" content="dark light">
+  <meta property="og:title" content="{{ profile.name }} · portfolio">
+  <meta property="og:description" content="{{ profile.role }}. {{ profile.tagline }}">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ asset_url('static/style.css') }}">
+  <script src="{{ asset_url('static/theme.js') }}"></script>
+  <script src="{{ asset_url('static/main.js') }}" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">przejdź do treści</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <a class="brand" href="#top">tkoralewski<span class="caret">_</span></a>
+      <nav class="nav" id="nav" aria-label="Sekcje">
+        <a href="#projekty">projekty</a>
+        <a href="#doswiadczenie">doświadczenie</a>
+        <a href="#umiejetnosci">umiejętności</a>
+        <a href="#edukacja">edukacja</a>
+        <a href="#kontakt">kontakt</a>
+      </nav>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Przełącz motyw">
+          {{ icon("sun", "icon-sun") }}{{ icon("moon", "icon-moon") }}
+        </button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false">
+          {{ icon("menu") }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" id="top">
+      <p class="mono muted">{{ profile.location | lower }}</p>
+      <h1>{{ profile.name | lower }}</h1>
+      <p class="tagline">{{ profile.tagline }}</p>
+      <p class="lead">{{ profile.about }}</p>
+
+      <p class="status"><span class="dot" aria-hidden="true"></span>teraz: {{ profile.status }}</p>
+      <p class="newsletter">co dwa tygodnie wysyłam <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> — newsletter o ekosystemie pythona</p>
+
+      <div class="cta">
+        <a class="btn btn--primary" href="mailto:{{ profile.email }}">{{ icon("mail") }} napisz do mnie</a>
+        <a class="btn" href="{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} pobierz cv</a>
+      </div>
+
+      <ul class="socials">
+        <li><a href="{{ profile.github }}" rel="me noopener" target="_blank" aria-label="GitHub">{{ icon("github") }}</a></li>
+        <li><a href="{{ profile.linkedin }}" rel="me noopener" target="_blank" aria-label="LinkedIn">{{ icon("linkedin") }}</a></li>
+        <li><a href="mailto:{{ profile.email }}" aria-label="E-mail">{{ icon("mail") }}</a></li>
+      </ul>
+
+      <dl class="stats">
+        <div><dt>lata w danych</dt><dd>{{ tech_years }}+</dd></div>
+        <div><dt>projekty</dt><dd>{{ projects | length }}</dd></div>
+        <div><dt>główny język</dt><dd>python</dd></div>
+      </dl>
+    </section>
+
+    <section class="section wrap" id="projekty">
+      <h2><span class="mono accent">01.</span> projekty</h2>
+      <p class="section__intro">Rzeczy, które zbudowałem — w pracy i po godzinach.</p>
+      <div class="projects">
+        {% for project in projects %}
+        <article class="card{% if project.get("featured") %} card--featured{% endif %}">
+          <header class="card__head">
+            {% if project.get("featured") %}<span class="badge">na żywo</span>{% endif %}
+            <h3>
+              {% if project.get("address") %}
+              <a href="{{ project.get("address") }}" target="_blank" rel="noopener">{{ project.title }} <span class="arrow" aria-hidden="true">→</span></a>
+              {% else %}
+              {{ project.title }}
+              {% endif %}
+            </h3>
+            {% if project.get("address") %}<p class="mono muted small">{{ project.get("address") | replace("https://", "") | trim("/") }}</p>{% endif %}
+          </header>
+          <p>{{ project.description }}</p>
+          {% if project.get("photo_urls") %}
+          <div class="gallery">
+            {% for url in project.get("photo_urls") %}
+            <a href="{{ url }}" target="_blank" rel="noopener"><img src="{{ url }}" alt="Zrzut ekranu: {{ project.title }} ({{ loop.index }})" loading="lazy" decoding="async"></a>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <ul class="chips">
+            {% for tech in project.tech %}<li>{{ tech }}</li>{% endfor %}
+          </ul>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section wrap" id="doswiadczenie">
+      <h2><span class="mono accent">02.</span> doświadczenie</h2>
+      <ol class="timeline">
+        {% for job in experience %}
+        <li class="timeline__item">
+          <p class="mono muted small">{{ job.start_date | month_year }} — {{ job.get("end_date") | month_year }}</p>
+          <h3>{{ job.job_title }}</h3>
+          <p class="company">{{ job.company }}</p>
+          <ul class="bullets">
+            {% for item in job.responsibilities %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+          <ul class="chips chips--small">
+            {% for tech in job.tech %}<li>{{ tech }}</li>{% endfor %}
+          </ul>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <section class="section wrap" id="umiejetnosci">
+      <h2><span class="mono accent">03.</span> umiejętności</h2>
+      <div class="skills">
+        {% for skill in skills %}
+        <div class="skill">
+          <div class="skill__head">
+            <h3>{{ skill.name }}</h3>
+            <span class="meter" role="img" aria-label="poziom {{ skill.level }} na 100">{% for i in range(10) %}<i{% if i < skill.level // 10 %} class="on"{% endif %}></i>{% endfor %}</span>
+          </div>
+          <p class="muted small">{{ skill.keywords | join(" · ") }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section wrap" id="edukacja">
+      <h2><span class="mono accent">04.</span> edukacja i certyfikaty</h2>
+      <div class="columns">
+        <div>
+          <h3 class="col-title mono muted">edukacja</h3>
+          <ul class="plain-list">
+            {% for edu in education %}
+            <li>
+              <p class="mono muted small">{{ edu.start_date }} — {{ edu.end_date }}</p>
+              <p class="strong">{{ edu.degree }} · {{ edu.field }}</p>
+              <p class="muted">{{ edu.institution }}{% if edu.specialization %} · {{ edu.specialization }}{% endif %}</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3 class="col-title mono muted">certyfikaty</h3>
+          <ul class="plain-list">
+            {% for cert in certs %}
+            <li>
+              <p class="mono muted small">{{ cert.date | month_year }}</p>
+              <p class="strong">{{ cert.title }}</p>
+              <p class="muted">{{ cert.issuer }}</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap contact" id="kontakt">
+      <h2><span class="mono accent">05.</span> kontakt</h2>
+      <p class="lead">Masz pomysł, projekt albo pytanie o dane produktowe? Napisz — odpowiadam.</p>
+      <a class="contact__mail" href="mailto:{{ profile.email }}">{{ profile.email }} <span class="arrow" aria-hidden="true">→</span></a>
+      <ul class="links">
+        <li><a href="{{ profile.linkedin }}" target="_blank" rel="noopener">{{ icon("linkedin") }} linkedin <span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="{{ profile.github }}" target="_blank" rel="noopener">{{ icon("github") }} github <span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="{{ profile.newsletter }}" target="_blank" rel="noopener">{{ icon("mail") }} newsletter <span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} cv (pdf) <span class="arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <p class="mono muted small">© {{ year }} {{ profile.name | lower }} · statyczny html z pythona i jinja</p>
+    <a class="mono small" href="#top">do góry ↑</a>
+  </footer>
+</body>
+</html>
