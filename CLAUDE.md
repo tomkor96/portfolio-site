@@ -1,37 +1,55 @@
 # Portfolio — instructions for Claude
 
-A static one-page portfolio (https://tkoralewski.toadres.pl), built from `data.py` with Jinja2 and
-served by nginx in Docker. The user writes in Polish; reply in Polish. Overview and commands: @README.md
+Static one-page portfolio of Tomasz Koralewski (https://tkoralewski.toadres.pl): `data.py` →
+`build.py` (Jinja2) → `dist/` → nginx in Docker on mikr.us `jeff190`. The user writes in Polish;
+reply in Polish. Code, comments, commits and PRs in English.
+
+## Commands
+
+```sh
+uv sync                                        # deps (uv only, no pip)
+uv run python build.py                         # build → dist/index.html
+uv run python -m http.server -d dist 8000      # preview
+uv run ruff check . && uv run ruff format --check .
+uv run pytest                                  # tests/test_build.py
+```
+
+`/verify` runs the whole matrix (including `docker build`); `/deploy` is the user's command.
+
+## Where things live
+
+- `data.py` — all content: profile, projects, experience, skills, education, certificates.
+- `templates/index.html` — the page; `templates/icons.html` — inline SVG icon macro.
+- `static/` — `style.css` (theme tokens), `theme.js` (runs in `<head>`), `main.js`, `img/`.
+- `nginx.conf` — the in-container server: CSP and other headers, caching, `/healthz`.
+- `.claude/skills/deploy/SKILL.md` — server facts; read it before any work on the server.
+
+## Rules
+
+- IMPORTANT: the CSP is `default-src 'self'`. No inline `<script>`, no `style=""`, no third-party
+  scripts, fonts or images; `tests/test_build.py` fails on them. Store screenshots in
+  `static/img/` and reference them as `static/img/<file>`.
+- Content changes go to `data.py` only; templates hold layout and fixed UI labels. UI text is
+  Polish and headings are lowercase on purpose.
+- Jinja runs with `StrictUndefined`: read optional keys with `.get()` (`address`, `photo_urls`,
+  `featured`, `end_date`). `"featured": True` puts a project first with the "na żywo" badge.
+- Theme colors are CSS custom properties: change both the dark defaults and the light block
+  (it appears twice: under `prefers-color-scheme` and under `[data-theme="light"]`).
+- New-tab links carry `rel="noopener"`. Don't add runtime dependencies without asking.
 
 ## Workflow
 
-- `main` changes only through pull requests. Work on a branch `feat/*`, `fix/*` or `chore/*`; the
-  guard hook blocks pushes to `main`.
-- Commits, PR titles and PR descriptions in English, as conventional commits with an optional scope,
-  e.g. `feat(projects): add Python Digest`, `fix: …`, `chore: …`, `docs: …`, `ci: …`. PRs are
-  squash-merged, so the PR title becomes the commit on `main`.
-- Before opening a PR: content-only changes in `data.py` → `uv run pytest`; template, CSS, JS,
-  Dockerfile or `nginx.conf` changes → full `/verify` and a look at the page (desktop + mobile,
-  both themes); review non-trivial changes with the built-in `/code-review`.
-- Open the PR with `/dev-kit:pr-open`; red CI → `/dev-kit:ci-fix`.
-- Merge only with green CI (`gh pr merge --squash --delete-branch`). Commit, push, merge and deploy
-  only when the user asks. Deploy is the user's `/deploy` command; before any other work on the
-  server (nginx, cron) read the server facts in `.claude/skills/deploy/SKILL.md`.
+- `main` changes only through PRs from `feat/*`, `fix/*` or `chore/*`; the guard hook blocks pushes
+  to `main`. Conventional commits (`feat(projects): …`, `fix: …`, `ci: …`); squash-merged.
+- Before a PR: `data.py`-only changes → `uv run pytest`; template, CSS, JS, Dockerfile or
+  `nginx.conf` → `/verify` plus a look at the page in both themes at 1280 px and 390 px.
+  Headless Edge/Chrome won't render narrower than ~500 px: for 390 px load the page in a 390 px
+  `<iframe>`. Below-the-fold images are `loading="lazy"` and look empty in full-page screenshots.
+- Open PRs with `/dev-kit:pr-open`; red CI → `/dev-kit:ci-fix`. Commit, push, merge and deploy only
+  when the user asks.
 
-## Conventions
+## Environment quirks
 
-- Content (texts, projects, dates) lives only in `data.py`; templates hold layout and fixed UI
-  labels. UI text is Polish, lowercase headings are intentional.
-- Optional project fields (`address`, `photo_urls`, `featured`) are read with `.get()` in
-  templates: Jinja runs with `StrictUndefined`, so a missing key fails the build instead of
-  rendering empty.
-- Screenshots are stored in `static/img/` and referenced by relative path; no hotlinked images.
-- Code comments in English, only where they explain something the code doesn't. Files use LF; the
-  PostToolUse hook runs `ruff format` on every Python file Claude edits.
-
-## Security
-
-- The container sends `Content-Security-Policy: default-src 'self'`: no inline `<script>`, no
-  `style=""` attributes, no third-party scripts, fonts or images. `tests/test_build.py` enforces it.
-  Colors and themes go through CSS custom properties in `static/style.css`.
-- Links that open a new tab carry `rel="noopener"`.
+- Windows dev machine: files are LF (`.gitattributes`); the PostToolUse hook runs `ruff format`
+  on edited Python files. Docker Desktop is often off locally — CI builds and smoke-tests the image.
+- On the server never `sed -i` `nginx.conf` (bind mount; the guard hook blocks it).
