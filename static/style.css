@@ -981,7 +981,7 @@ a:hover .arrow {
   }
 }
 
-/* Hero portrait: accent ring, dashed orbit, muted warm tone that warms up to full color on hover */
+/* Hero portrait: accent ring and a slowly orbiting dashed ring */
 .hero__head {
   display: flex;
   align-items: center;
@@ -1016,12 +1016,10 @@ a:hover .arrow {
     0 0 0 3px var(--bg),
     0 0 0 5px var(--accent),
     0 18px 40px -18px rgb(0 0 0 / 0.6);
-  filter: grayscale(0.55) sepia(0.18) contrast(1.06) brightness(0.97);
-  transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .portrait:hover img {
-  filter: none;
   transform: scale(1.03) rotate(-1.5deg);
 }
 
