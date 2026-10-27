@@ -32,7 +32,7 @@ uv run pytest                                  # tests/test_build.py
 - Content changes go to `data.py` only; templates hold layout and fixed UI labels. UI text is
   Polish and headings are lowercase on purpose.
 - Jinja runs with `StrictUndefined`: read optional keys with `.get()` (`address`, `photo_urls`,
-  `featured`, `end_date`). `"featured": True` puts a project first with the "na żywo" badge.
+  `featured`, `end_date`). `"featured": True` puts a project first with the "live" badge.
 - Theme colors are CSS custom properties: change both the dark defaults and the light block
   (it appears twice: under `prefers-color-scheme` and under `[data-theme="light"]`).
 - New-tab links carry `rel="noopener"`. Don't add runtime dependencies without asking.

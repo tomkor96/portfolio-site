@@ -26,7 +26,7 @@ container answers on `portfolio:8080`, health check at `/healthz`).
 | `nginx.conf`             | in-container server: CSP, caching, `/healthz`             |
 
 A new project: add a dict to `PROJECTS` in `data.py` (`"featured": True` puts it first with a
-"na żywo" badge); screenshots go to `static/img/` and are referenced as `static/img/<file>`.
+"live" badge); screenshots go to `static/img/` and are referenced as `static/img/<file>`.
 
 ## Checking changes
 

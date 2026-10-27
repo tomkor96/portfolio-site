@@ -90,6 +90,15 @@ def test_month_year(value, expected):
     assert month_year(value) == expected
 
 
+def test_gallery_links_open_the_lightbox(site):
+    # main.js groups slides per gallery; a link without data-lightbox would open a new tab instead.
+    _, html, parser = site
+    images = [r for r in parser.refs if r.startswith("static/img/")]
+    assert images
+    assert html.count("data-lightbox") == len(images) // 2
+    assert 'id="lightbox"' in html
+
+
 def test_assets_are_cache_busted(site):
     _, _, parser = site
     assets = [r for r in parser.refs if r.endswith((".css", ".js")) or "?v=" in r]

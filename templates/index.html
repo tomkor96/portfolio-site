@@ -62,7 +62,7 @@
 
       <dl class="stats">
         <div><dt>lata w danych</dt><dd>{{ tech_years }}+</dd></div>
-        <div><dt>projekty</dt><dd>{{ projects | length }}</dd></div>
+        <div><dt>ai na co dzień</dt><dd>claude code</dd></div>
         <div><dt>główny język</dt><dd>python</dd></div>
       </dl>
     </section>
@@ -74,7 +74,7 @@
         {% for project in projects %}
         <article class="card{% if project.get("featured") %} card--featured{% endif %}">
           <header class="card__head">
-            {% if project.get("featured") %}<span class="badge">na żywo</span>{% endif %}
+            {% if project.get("featured") %}<span class="badge badge--live"><span class="live-dot" aria-hidden="true"></span>live</span>{% endif %}
             <h3>
               {% if project.get("address") %}
               <a href="{{ project.get("address") }}" target="_blank" rel="noopener">{{ project.title }} <span class="arrow" aria-hidden="true">→</span></a>
@@ -88,7 +88,7 @@
           {% if project.get("photo_urls") %}
           <div class="gallery">
             {% for url in project.get("photo_urls") %}
-            <a href="{{ url }}" target="_blank" rel="noopener"><img src="{{ url }}" alt="Zrzut ekranu: {{ project.title }} ({{ loop.index }})" loading="lazy" decoding="async"></a>
+            <a href="{{ url }}" target="_blank" rel="noopener" data-lightbox data-caption="{{ project.title }}"><img src="{{ url }}" alt="Zrzut ekranu: {{ project.title }} ({{ loop.index }})" loading="lazy" decoding="async"></a>
             {% endfor %}
           </div>
           {% endif %}
@@ -166,7 +166,7 @@
 
     <section class="section wrap contact" id="kontakt">
       <h2><span class="mono accent">05.</span> kontakt</h2>
-      <p class="lead">Masz pomysł, projekt albo pytanie o dane produktowe? Napisz — odpowiadam.</p>
+      <p class="lead">Masz pomysł, projekt albo pytanie? Napisz — odpowiadam.</p>
       <a class="contact__mail" href="mailto:{{ profile.email }}">{{ profile.email }} <span class="arrow" aria-hidden="true">→</span></a>
       <ul class="links">
         <li><a href="{{ profile.linkedin }}" target="_blank" rel="noopener">{{ icon("linkedin") }} linkedin <span class="arrow" aria-hidden="true">→</span></a></li>
@@ -176,6 +176,21 @@
       </ul>
     </section>
   </main>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Galeria zrzutów ekranu">
+    <div class="lightbox__frame">
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" id="lightbox-img" alt="">
+        <figcaption class="lightbox__caption">
+          <span id="lightbox-caption"></span>
+          <span class="mono muted" id="lightbox-counter"></span>
+        </figcaption>
+      </figure>
+      <button class="lightbox__btn lightbox__close" id="lightbox-close" type="button" aria-label="Zamknij">{{ icon("close") }}</button>
+      <button class="lightbox__btn lightbox__nav lightbox__nav--prev" id="lightbox-prev" type="button" aria-label="Poprzedni zrzut">{{ icon("prev") }}</button>
+      <button class="lightbox__btn lightbox__nav lightbox__nav--next" id="lightbox-next" type="button" aria-label="Następny zrzut">{{ icon("next") }}</button>
+    </div>
+  </dialog>
 
   <footer class="footer wrap">
     <p class="mono muted small">© {{ year }} {{ profile.name | lower }} · statyczny html z pythona i jinja</p>
