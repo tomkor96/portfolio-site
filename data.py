@@ -7,7 +7,7 @@ PROFILE: dict[str, str | list[str]] = {
     "github": "https://github.com/tomkor96",
     "newsletter": "https://pythondigest.toadres.pl/",
     "cv_path": "docs/Tomasz_Koralewski_CV.pdf",
-    "tagline": "dane produktowe. automatyzacja. python.",
+    "tagline": "dane. aplikacje. automatyzacja.",
     "about": "Mam na imię Tomek i lubię rozwiązywać problemy z użyciem technologii. Na co dzień pobieram, czyszczę i porządkuję dane produktowe dla e-commerce, a po godzinach buduję własne aplikacje — od newslettera o Pythonie po katalog domowej biblioteki.",
     "status": "Senetic · inżynier ds. danych produktowych",
     "skills": [
@@ -239,6 +239,10 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "description": "Aplikacja PWA do katalogowania domowej kolekcji książek i gier planszowych: miejsca na półkach, skanowanie kodów ISBN/EAN, automatyczne pobieranie metadanych i okładek, wypożyczenia, oceny oraz zapowiedzi wydawnicze z powiadomieniami e-mail.",
         "address": "https://biblioteczka.toadres.pl/",
         "tech": ["SvelteKit", "TypeScript", "SQLite", "Tailwind CSS", "Playwright", "Docker"],
+        "photo_urls": [
+            "static/img/biblioteczka-zapowiedzi.png",
+            "static/img/biblioteczka-katalog.png",
+        ],
         "featured": True,
     },
     {
@@ -276,10 +280,5 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
             "static/img/zrzut-ekranu-2025-09-23-212411.png",
             "static/img/zrzut-ekranu-2025-09-23-212151.png",
         ],
-    },
-    {
-        "title": "Kalkulator alternatywnych produktów e-commerce",
-        "description": "Kalkulator alternatywnych produktów dla e-commerce. Pozwala określić atrybuty, które muszą mieć dokładnie takie same wartości oraz atrybuty, których wartości powinny być podobne. Na podstawie tak zafiltrowanych produktów otrzymujemy najbardziej podobne produkty, które następnie są wyświetlane jako zamienniki do produktów już niedostępnych.",
-        "tech": ["Python", "Docker", "MySQL", "SQL Server"],
     },
 ]
