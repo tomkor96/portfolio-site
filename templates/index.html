@@ -72,17 +72,18 @@
       <p class="section__intro">Rzeczy, które zbudowałem — w pracy i po godzinach.</p>
       <div class="projects">
         {% for project in projects %}
-        <article class="card{% if project.get("featured") %} card--featured{% endif %}">
+        <article class="card{% if project.get("featured") %} card--featured{% endif %}{% if project.get("offline") %} card--offline{% endif %}">
           <header class="card__head">
             {% if project.get("featured") %}<span class="badge badge--live"><span class="live-dot" aria-hidden="true"></span>live</span>{% endif %}
+            {% if project.get("offline") %}<span class="badge badge--offline"><span class="offline-dot" aria-hidden="true"></span>offline</span>{% endif %}
             <h3>
-              {% if project.get("address") %}
+              {% if project.get("address") and not project.get("offline") %}
               <a href="{{ project.get("address") }}" target="_blank" rel="noopener">{{ project.title }} <span class="arrow" aria-hidden="true">→</span></a>
               {% else %}
               {{ project.title }}
               {% endif %}
             </h3>
-            {% if project.get("address") %}<p class="mono muted small">{{ project.get("address") | replace("https://", "") | trim("/") }}</p>{% endif %}
+            {% if project.get("address") %}<p class="mono muted small">{% if project.get("offline") %}<s>{{ project.get("address") | replace("https://", "") | trim("/") }}</s> · aplikacja już nie działa{% else %}{{ project.get("address") | replace("https://", "") | trim("/") }}{% endif %}</p>{% endif %}
           </header>
           <p>{{ project.description }}</p>
           {% if project.get("photo_urls") %}
@@ -93,7 +94,7 @@
           </div>
           {% endif %}
           <ul class="chips">
-            {% for tech in project.tech %}<li>{{ tech }}</li>{% endfor %}
+            {% for tech in project.tech %}<li class="chip--{{ tech | slug }}">{{ tech }}</li>{% endfor %}
           </ul>
         </article>
         {% endfor %}
@@ -112,7 +113,7 @@
             {% for item in job.responsibilities %}<li>{{ item }}</li>{% endfor %}
           </ul>
           <ul class="chips chips--small">
-            {% for tech in job.tech %}<li>{{ tech }}</li>{% endfor %}
+            {% for tech in job.tech %}<li class="chip--{{ tech | slug }}">{{ tech }}</li>{% endfor %}
           </ul>
         </li>
         {% endfor %}
