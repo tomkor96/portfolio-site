@@ -28,7 +28,10 @@ class LinkCollector(HTMLParser):
         if values.get("style") or tag == "style":
             self.inline_styles.append(tag)
         self.event_handlers += [name for name in values if name.startswith("on")]
-        self._in_script = tag == "script" and "src" not in values
+        # JSON-LD is a data block, not script: the CSP doesn't apply to it.
+        self._in_script = (
+            tag == "script" and "src" not in values and values.get("type") != "application/ld+json"
+        )
 
     def handle_data(self, data: str) -> None:
         if self._in_script and data.strip():
@@ -127,6 +130,19 @@ def test_offline_project_is_not_linked(site):
     for project in site_data.PROJECTS:
         if project.get("offline"):
             assert f'href="{project["address"]}"' not in html
+
+
+def test_images_are_webp(site):
+    out, _, _ = site
+    images = list((out / "static" / "img").iterdir())
+    assert images and all(image.suffix == ".webp" for image in images)
+
+
+def test_link_preview(site):
+    out, html, _ = site
+    assert (out / "static" / "og.png").is_file()
+    assert f'content="{site_data.PROFILE["site_url"]}/static/og.png"' in html
+    assert '"@type": "Person"' in html
 
 
 def test_years_since():

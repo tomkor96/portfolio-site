@@ -26,9 +26,13 @@ uv run pytest                                  # tests/test_build.py
 
 ## Rules
 
-- IMPORTANT: the CSP is `default-src 'self'`. No inline `<script>`, no `style=""`, no third-party
-  scripts, fonts or images; `tests/test_build.py` fails on them. Store screenshots in
-  `static/img/` and reference them as `static/img/<file>`.
+- IMPORTANT: the CSP is `default-src 'self'`. No inline `<script>` (JSON-LD data blocks excepted),
+  no `style=""` (set custom properties from JS via `style.setProperty`), no third-party scripts,
+  fonts or images; `tests/test_build.py` fails on them.
+- Images: add the PNG to `assets/img/`, run `scripts/optimize_images.py`, reference
+  `static/img/<name>.webp` in `data.py` (cards load `-thumb.webp` automatically). Profile, tagline
+  or portrait change → rerun `scripts/og_image.py`. Pillow is a dev dependency only.
+- Planned work lives in `tasks/NN-*.md`; update the task's status when its PR merges.
 - Content changes go to `data.py` only; templates hold layout and fixed UI labels. UI text is
   Polish and headings are lowercase on purpose.
 - Jinja runs with `StrictUndefined`: read optional keys with `.get()` (`address`, `photo_urls`,

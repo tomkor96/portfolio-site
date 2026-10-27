@@ -3,6 +3,7 @@
 import argparse
 import datetime as dt
 import hashlib
+import json
 import logging
 import re
 import shutil
@@ -52,6 +53,22 @@ def asset_url(path: str) -> str:
     return f"{path}?v={digest}"
 
 
+def person_json_ld() -> str:
+    """schema.org Person for search engines; "</" is escaped so the data can't close the tag."""
+    profile = data.PROFILE
+    person = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": profile["name"],
+        "jobTitle": profile["role"],
+        "url": profile["site_url"],
+        "image": f"{profile['site_url']}/static/img/portrait.webp",
+        "email": f"mailto:{profile['email']}",
+        "sameAs": [profile["linkedin"], profile["github"]],
+    }
+    return json.dumps(person, ensure_ascii=False).replace("</", r"<\/")
+
+
 def build_context() -> dict:
     """Everything the templates read; projects marked featured come first."""
     projects = sorted(data.PROJECTS, key=lambda p: not p.get("featured", False))
@@ -63,6 +80,7 @@ def build_context() -> dict:
         "certs": data.CERTS,
         "projects": projects,
         "cv_file": Path(data.PROFILE["cv_path"]).name,
+        "json_ld": person_json_ld(),
         "tech_years": years_since(data.EXPERIENCE[0]["start_date"]),
         "year": dt.date.today().year,
     }
