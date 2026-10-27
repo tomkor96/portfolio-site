@@ -102,5 +102,10 @@ Until this is done the reverse proxy points at the old Streamlit container. Skip
 - `/etc/cron.d/portfolio-site` runs `scripts/live_status.py` every 5 minutes (log
   `/var/log/portfolio-live.log`); `runtime/` is not in git. A missing or stale `live.json` (>30 min)
   hides the badges instead of showing a false "live".
+- Analytics: GoatCounter container `goatcounter` from `ops/goatcounter/compose.yaml` (run
+  `docker compose up -d` in `/root/apps/portfolio-site/ops/goatcounter` when that file changes),
+  data in the `goatcounter_goatcounter-data` volume, dashboard `https://tkstats.toadres.pl`
+  (nginx-proxy server block, Mikrus subdomain → port 80). The portfolio forwards `/count` to it.
+  Admin password: `/root/apps/goatcounter-admin-password` (root-only; never print it).
 - The portfolio container is read-only (`read_only: true`, `/tmp` as tmpfs) and listens on 8080 as
   a non-root user; logs are capped at 3 × 10 MB.

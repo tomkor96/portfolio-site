@@ -239,3 +239,34 @@ fetch("/live/live.json", { cache: "no-store" })
   .catch(() => {
     // No status file (local preview, CI) or a network error: badges simply stay hidden.
   });
+
+// Cookie-free analytics (GoatCounter behind /count, same origin). Only on the real site, and not
+// for visitors who ask not to be tracked.
+const analyticsOn = location.protocol === "https:" && navigator.doNotTrack !== "1";
+
+function count(params) {
+  if (!analyticsOn) return;
+  const query = new URLSearchParams({ ...params, rnd: Math.random().toString(36).slice(2) });
+  const url = `/count?${query}`;
+  if (!navigator.sendBeacon?.(url)) fetch(url, { method: "POST", keepalive: true }).catch(() => {});
+}
+
+function countEvent(name) {
+  count({ p: name, e: "true" });
+}
+
+count({
+  p: location.pathname,
+  r: document.referrer,
+  t: document.title,
+  s: `${screen.width},${screen.height},${devicePixelRatio}`,
+});
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a");
+  if (!link) return;
+  if (link.hasAttribute("download")) countEvent("cv-download");
+  else if (link.hasAttribute("data-lightbox")) countEvent(`gallery: ${link.dataset.caption}`);
+  else if (link.protocol === "mailto:") countEvent("mailto");
+  else if (link.host && link.host !== location.host) countEvent(`out: ${link.host}${link.pathname}`);
+});
