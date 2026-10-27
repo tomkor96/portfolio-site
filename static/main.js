@@ -189,17 +189,22 @@ if (matchMedia("(hover: hover)").matches && !reducedMotion.matches) {
 // Live status and the latest newsletter issue, from /live/live.json (cron on the server, every
 // 5 minutes). No file, a failed request or stale data leaves everything hidden: never a false "live".
 const STALE_AFTER_MS = 30 * 60 * 1000;
+const LIVE_TEXTS = {
+  pl: { down: "niedostępna", checked: "sprawdzono", now: "przed chwilą", ago: (m) => `${m} min temu` },
+  en: { down: "down", checked: "checked", now: "just now", ago: (m) => `${m} min ago` },
+};
+const liveText = LIVE_TEXTS[document.documentElement.lang] ?? LIVE_TEXTS.pl;
 
 function minutesAgo(date) {
   const minutes = Math.max(0, Math.round((Date.now() - date) / 60000));
-  return minutes === 0 ? "przed chwilą" : `${minutes} min temu`;
+  return minutes === 0 ? liveText.now : liveText.ago(minutes);
 }
 
 function showStatus(badge, check, checkedAt) {
   const label = badge.querySelector("[data-live-label]");
   badge.classList.add(check.up ? "badge--live" : "badge--down");
-  label.textContent = check.up ? "live" : "niedostępna";
-  badge.title = `sprawdzono ${minutesAgo(checkedAt)}${check.up ? ` · ${check.ms} ms` : ""}`;
+  label.textContent = check.up ? "live" : liveText.down;
+  badge.title = `${liveText.checked} ${minutesAgo(checkedAt)}${check.up ? ` · ${check.ms} ms` : ""}`;
   badge.hidden = false;
 }
 

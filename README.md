@@ -19,7 +19,8 @@ container answers on `portfolio:8080`, health check at `/healthz`).
 
 | Path                     | What                                                      |
 | ------------------------ | --------------------------------------------------------- |
-| `data.py`                | profile, experience, projects, skills, education, certs   |
+| `data.py`                | content: profile, experience, projects… (`{pl, en}` values) |
+| `texts.py`               | fixed UI labels per language, month names                 |
 | `templates/`             | `index.html` (one page) and `icons.html` (inline SVG)     |
 | `static/`                | CSS, JS (theme toggle, mobile menu), favicon, screenshots |
 | `docs/`                  | the CV PDF, copied next to `index.html` on build          |

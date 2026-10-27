@@ -1,6 +1,6 @@
 # 02 — Card spotlight that follows the cursor
 
-PR 1 · Status: in review
+PR 1 · Status: done (PR #5)
 
 ## Goal
 

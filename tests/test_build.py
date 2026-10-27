@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 
 import data as site_data
-from build import build, month_year, slug, years_since
+from build import LANGUAGES, build, localize, month_year, slug, years_since
+from texts import TEXTS
 
 
 class LinkCollector(HTMLParser):
@@ -42,29 +43,38 @@ class LinkCollector(HTMLParser):
 
 
 @pytest.fixture(scope="module")
-def site(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, str, LinkCollector]:
+def dist(tmp_path_factory: pytest.TempPathFactory) -> Path:
     out = tmp_path_factory.mktemp("dist")
-    page = build(out)
-    html = page.read_text(encoding="utf-8")
+    build(out)
+    return out
+
+
+@pytest.fixture(params=LANGUAGES)
+def site(request: pytest.FixtureRequest, dist: Path) -> tuple[Path, str, LinkCollector]:
+    """(directory of the page, its HTML, parsed links) — every page test runs for PL and EN."""
+    page_dir = dist / TEXTS[request.param]["path"].strip("/")
+    html = (page_dir / "index.html").read_text(encoding="utf-8")
     parser = LinkCollector()
     parser.feed(html)
-    return out, html, parser
+    return page_dir, html, parser
 
 
 def test_every_project_is_rendered(site):
-    _, html, _ = site
-    for project in site_data.PROJECTS:
+    page_dir, html, _ = site
+    lang = "en" if page_dir.name == "en" else "pl"
+    for project in localize(site_data.PROJECTS, lang):
         assert project["title"] in html
         if project.get("address") and not project.get("offline"):
             assert f'href="{project["address"]}"' in html
 
 
 def test_local_links_resolve(site):
-    out, _, parser = site
+    page_dir, _, parser = site
     local = [r for r in parser.refs if not r.startswith(("http", "mailto:", "#"))]
     assert local, "expected static assets and the CV"
     for ref in local:
-        assert (out / ref.split("?")[0]).is_file(), f"missing {ref}"
+        target = (page_dir / ref.split("?")[0]).resolve()
+        assert target.is_file() or (target / "index.html").is_file(), f"missing {ref}"
 
 
 def test_anchors_resolve(site):
@@ -96,7 +106,7 @@ def test_month_year(value, expected):
 def test_gallery_links_open_the_lightbox(site):
     # main.js groups slides per gallery; a link without data-lightbox would open a new tab instead.
     _, html, parser = site
-    images = [r for r in parser.refs if r.startswith("static/img/")]
+    images = [r for r in parser.refs if "static/img/" in r and "portrait" not in r]
     assert images
     assert html.count("data-lightbox") == len(images) // 2
     assert 'id="lightbox"' in html
@@ -127,22 +137,49 @@ def test_slug(value, expected):
 
 def test_offline_project_is_not_linked(site):
     _, html, _ = site
-    for project in site_data.PROJECTS:
+    for project in localize(site_data.PROJECTS, "pl"):
         if project.get("offline"):
             assert f'href="{project["address"]}"' not in html
 
 
-def test_images_are_webp(site):
-    out, _, _ = site
-    images = list((out / "static" / "img").iterdir())
+def test_images_are_webp(dist):
+    images = list((dist / "static" / "img").iterdir())
     assert images and all(image.suffix == ".webp" for image in images)
 
 
-def test_link_preview(site):
-    out, html, _ = site
-    assert (out / "static" / "og.png").is_file()
-    assert f'content="{site_data.PROFILE["site_url"]}/static/og.png"' in html
-    assert '"@type": "Person"' in html
+def test_link_preview(dist):
+    site_url = site_data.PROFILE["site_url"]
+    for lang, image in (("pl", "og.png"), ("en", "og-en.png")):
+        html = (dist / TEXTS[lang]["path"].strip("/") / "index.html").read_text(encoding="utf-8")
+        assert (dist / "static" / image).is_file()
+        assert f'content="{site_url}/static/{image}"' in html
+        assert f'hreflang="en" href="{site_url}/en/"' in html
+        assert '"@type": "Person"' in html
+
+
+def _half_translated(value, path="data"):
+    """Paths of {"pl": ...} dicts that are missing the other language."""
+    if isinstance(value, dict):
+        if value and set(value) <= set(LANGUAGES):
+            return [] if set(value) == set(LANGUAGES) else [path]
+        return [p for k, v in value.items() for p in _half_translated(v, f"{path}.{k}")]
+    if isinstance(value, list):
+        return [p for i, v in enumerate(value) for p in _half_translated(v, f"{path}[{i}]")]
+    return []
+
+
+def test_translations_are_complete():
+    content = [site_data.PROFILE, site_data.EDUCATION, site_data.EXPERIENCE]
+    content += [site_data.SKILLS, site_data.CERTS, site_data.PROJECTS]
+    assert _half_translated(content) == []
+    assert set(TEXTS["pl"]) == set(TEXTS["en"])
+
+
+def test_english_page_has_no_polish_ui(dist):
+    html = (dist / "en" / "index.html").read_text(encoding="utf-8")
+    assert '<html lang="en">' in html
+    for label in ("napisz do mnie", "doświadczenie", "umiejętności", "obecnie", "Zrzut ekranu"):
+        assert label not in html
 
 
 def test_years_since():

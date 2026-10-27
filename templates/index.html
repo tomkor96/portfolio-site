@@ -1,44 +1,51 @@
 {% from "icons.html" import icon %}
 <!doctype html>
-<html lang="pl">
+<html lang="{{ t.html_lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ profile.name }} · portfolio</title>
   <meta name="description" content="{{ profile.name }} — {{ profile.role }}. {{ profile.tagline }}">
   <meta name="color-scheme" content="dark light">
-  <link rel="canonical" href="{{ profile.site_url }}/">
+  <link rel="canonical" href="{{ profile.site_url }}{{ t.path }}">
+  {% for code, other in texts.items() %}
+  <link rel="alternate" hreflang="{{ other.html_lang }}" href="{{ profile.site_url }}{{ other.path }}">
+  {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ profile.site_url }}/">
   <meta property="og:title" content="{{ profile.name }} · portfolio">
   <meta property="og:description" content="{{ profile.role }}. {{ profile.tagline }}">
   <meta property="og:type" content="profile">
-  <meta property="og:url" content="{{ profile.site_url }}/">
-  <meta property="og:locale" content="pl_PL">
-  <meta property="og:image" content="{{ profile.site_url }}/static/og.png">
+  <meta property="og:url" content="{{ profile.site_url }}{{ t.path }}">
+  <meta property="og:locale" content="{{ t.og_locale }}">
+  <meta property="og:image" content="{{ profile.site_url }}/static/{{ 'og.png' if lang == 'pl' else 'og-' ~ lang ~ '.png' }}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="{{ profile.name }} — {{ profile.tagline }}">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">{{ json_ld | safe }}</script>
-  <link rel="icon" href="static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="{{ asset_url('static/style.css') }}">
-  <script src="{{ asset_url('static/theme.js') }}"></script>
-  <script src="{{ asset_url('static/main.js') }}" defer></script>
+  <link rel="icon" href="{{ root }}static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ root }}{{ asset_url('static/style.css') }}">
+  <script src="{{ root }}{{ asset_url('static/theme.js') }}"></script>
+  <script src="{{ root }}{{ asset_url('static/main.js') }}" defer></script>
 </head>
 <body>
-  <a class="skip" href="#main">przejdź do treści</a>
+  <a class="skip" href="#main">{{ t.skip }}</a>
 
   <header class="topbar">
     <div class="wrap topbar__inner">
       <a class="brand" href="#top">tkoralewski<span class="caret">_</span></a>
-      <nav class="nav" id="nav" aria-label="Sekcje">
-        <a href="#projekty">projekty</a>
-        <a href="#doswiadczenie">doświadczenie</a>
-        <a href="#umiejetnosci">umiejętności</a>
-        <a href="#edukacja">edukacja</a>
-        <a href="#kontakt">kontakt</a>
+      <nav class="nav" id="nav" aria-label="{{ t.nav_label }}">
+        <a href="#{{ t.id_projects }}">{{ t.nav_projects }}</a>
+        <a href="#{{ t.id_experience }}">{{ t.nav_experience }}</a>
+        <a href="#{{ t.id_skills }}">{{ t.nav_skills }}</a>
+        <a href="#{{ t.id_education }}">{{ t.nav_education }}</a>
+        <a href="#{{ t.id_contact }}">{{ t.nav_contact }}</a>
       </nav>
       <div class="topbar__actions">
-        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Przełącz motyw">
+        {% for code, other in texts.items() if code != lang %}
+        <a class="icon-btn lang-switch" href="{{ root }}{{ other.path.lstrip('/') or './' }}" hreflang="{{ other.html_lang }}" lang="{{ other.html_lang }}" title="{{ t.switch_title }}">{{ t.switch_label }}</a>
+        {% endfor %}
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="{{ t.theme_toggle }}">
           {{ icon("sun", "icon-sun") }}{{ icon("moon", "icon-moon") }}
         </button>
         <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false">
@@ -57,17 +64,17 @@
           <p class="tagline">{{ profile.tagline }}</p>
         </div>
         <div class="portrait">
-          <img src="static/img/portrait.webp" alt="{{ profile.name }}" width="480" height="480" decoding="async" fetchpriority="high">
+          <img src="{{ root }}static/img/portrait.webp" alt="{{ profile.name }}" width="480" height="480" decoding="async" fetchpriority="high">
         </div>
       </div>
       <p class="lead">{{ profile.about }}</p>
 
-      <p class="status"><span class="dot" aria-hidden="true"></span>teraz: {{ profile.status }}</p>
-      <p class="newsletter">co dwa tygodnie wysyłam <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> — newsletter o ekosystemie pythona<span data-latest-issue="short" hidden> · <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">ostatnie wydanie <span data-latest-number></span> <span class="arrow" aria-hidden="true">→</span></a></span></p>
+      <p class="status"><span class="dot" aria-hidden="true"></span>{{ t.now }}: {{ profile.status }}</p>
+      <p class="newsletter">{{ t.newsletter_before }} <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> {{ t.newsletter_after }}<span data-latest-issue="short" hidden> · <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">{{ t.latest_issue }} <span data-latest-number></span> <span class="arrow" aria-hidden="true">→</span></a></span></p>
 
       <div class="cta">
-        <a class="btn btn--primary" href="mailto:{{ profile.email }}">{{ icon("mail") }} napisz do mnie</a>
-        <a class="btn" href="{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} pobierz cv</a>
+        <a class="btn btn--primary" href="mailto:{{ profile.email }}">{{ icon("mail") }} {{ t.write_to_me }}</a>
+        <a class="btn" href="{{ root }}{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} {{ t.download_cv }}</a>
       </div>
 
       <ul class="socials">
@@ -77,15 +84,15 @@
       </ul>
 
       <dl class="stats">
-        <div><dt>lata w danych</dt><dd>{{ tech_years }}+</dd></div>
-        <div><dt>ai na co dzień</dt><dd>claude code</dd></div>
-        <div><dt>główny język</dt><dd>python</dd></div>
+        <div><dt>{{ t.stat_years }}</dt><dd>{{ tech_years }}+</dd></div>
+        <div><dt>{{ t.stat_ai }}</dt><dd>claude code</dd></div>
+        <div><dt>{{ t.stat_language }}</dt><dd>python</dd></div>
       </dl>
     </section>
 
-    <section class="section wrap" id="projekty">
-      <h2><span class="mono accent">01.</span> projekty</h2>
-      <p class="section__intro">Rzeczy, które zbudowałem — w pracy i po godzinach.</p>
+    <section class="section wrap" id="{{ t.id_projects }}">
+      <h2><span class="mono accent">01.</span> {{ t.projects_title }}</h2>
+      <p class="section__intro">{{ t.projects_intro }}</p>
       <div class="projects">
         {% for project in projects %}
         <article class="card{% if project.get("featured") %} card--featured{% endif %}{% if project.get("offline") %} card--offline{% endif %}">
@@ -99,60 +106,60 @@
               {{ project.title }}
               {% endif %}
             </h3>
-            {% if project.get("address") %}<p class="mono muted small">{% if project.get("offline") %}<s>{{ project.get("address") | replace("https://", "") | trim("/") }}</s> · aplikacja już nie działa{% else %}{{ project.get("address") | replace("https://", "") | trim("/") }}{% endif %}</p>{% endif %}
+            {% if project.get("address") %}<p class="mono muted small">{% if project.get("offline") %}<s>{{ project.get("address") | replace("https://", "") | trim("/") }}</s> · {{ t.offline_note }}{% else %}{{ project.get("address") | replace("https://", "") | trim("/") }}{% endif %}</p>{% endif %}
           </header>
           <p>{{ project.description }}</p>
           {% if project.get("address") == profile.newsletter %}
           <a class="latest-issue" data-latest-issue="full" href="{{ profile.newsletter }}" target="_blank" rel="noopener" hidden>
-            <span class="latest-issue__label mono"><span data-latest-number></span> · ostatnie wydanie<span data-latest-date></span></span>
+            <span class="latest-issue__label mono"><span data-latest-number></span> · {{ t.latest_issue }}<span data-latest-date></span></span>
             <span class="latest-issue__title"><span data-latest-title></span> <span class="arrow" aria-hidden="true">→</span></span>
           </a>
           {% endif %}
           {% if project.get("access_on_request") %}
-          <p class="access-note">{{ icon("mail") }}<span>Aplikacja jest prywatna — chcesz konto? <a href="mailto:{{ profile.email }}?subject={{ ("Dostęp: " ~ project.title) | urlencode }}">napisz maila <span class="arrow" aria-hidden="true">→</span></a></span></p>
+          <p class="access-note">{{ icon("mail") }}<span>{{ t.access_note }} <a href="mailto:{{ profile.email }}?subject={{ (t.access_subject ~ project.title) | urlencode }}">{{ t.access_link }} <span class="arrow" aria-hidden="true">→</span></a></span></p>
           {% endif %}
           {% if project.get("photo_urls") %}
           <div class="gallery">
             {% for url in project.get("photo_urls") %}
-            <a href="{{ url }}" target="_blank" rel="noopener" data-lightbox data-caption="{{ project.title }}"><img src="{{ url | replace('.webp', '-thumb.webp') }}" alt="Zrzut ekranu: {{ project.title }} ({{ loop.index }})" width="640" height="400" loading="lazy" decoding="async"></a>
+            <a href="{{ root }}{{ url }}" target="_blank" rel="noopener" data-lightbox data-caption="{{ project.title }}"><img src="{{ root }}{{ url | replace('.webp', '-thumb.webp') }}" alt="{{ t.screenshot }}: {{ project.title }} ({{ loop.index }})" width="640" height="400" loading="lazy" decoding="async"></a>
             {% endfor %}
           </div>
           {% endif %}
           <ul class="chips">
-            {% for tech in project.tech %}<li class="chip--{{ tech | slug }}">{{ tech }}</li>{% endfor %}
+            {% for tech in project.tech %}<li class="chip--{{ tech | slug }}">{{ tech | tech_label(lang) }}</li>{% endfor %}
           </ul>
         </article>
         {% endfor %}
       </div>
     </section>
 
-    <section class="section wrap" id="doswiadczenie">
-      <h2><span class="mono accent">02.</span> doświadczenie</h2>
+    <section class="section wrap" id="{{ t.id_experience }}">
+      <h2><span class="mono accent">02.</span> {{ t.experience_title }}</h2>
       <ol class="timeline">
         {% for job in experience %}
         <li class="timeline__item">
-          <p class="mono muted small">{{ job.start_date | month_year }} — {{ job.get("end_date") | month_year }}</p>
+          <p class="mono muted small">{{ job.start_date | month_year(lang) }} — {{ job.get("end_date") | month_year(lang) }}</p>
           <h3>{{ job.job_title }}</h3>
           <p class="company">{{ job.company }}</p>
           <ul class="bullets">
             {% for item in job.responsibilities %}<li>{{ item }}</li>{% endfor %}
           </ul>
           <ul class="chips chips--small">
-            {% for tech in job.tech %}<li class="chip--{{ tech | slug }}">{{ tech }}</li>{% endfor %}
+            {% for tech in job.tech %}<li class="chip--{{ tech | slug }}">{{ tech | tech_label(lang) }}</li>{% endfor %}
           </ul>
         </li>
         {% endfor %}
       </ol>
     </section>
 
-    <section class="section wrap" id="umiejetnosci">
-      <h2><span class="mono accent">03.</span> umiejętności</h2>
+    <section class="section wrap" id="{{ t.id_skills }}">
+      <h2><span class="mono accent">03.</span> {{ t.skills_title }}</h2>
       <div class="skills">
         {% for skill in skills %}
         <div class="skill">
           <div class="skill__head">
             <h3>{{ skill.name }}</h3>
-            <span class="meter" role="img" aria-label="poziom {{ skill.level }} na 100">{% for i in range(10) %}<i{% if i < skill.level // 10 %} class="on"{% endif %}></i>{% endfor %}</span>
+            <span class="meter" role="img" aria-label="{{ t.skill_level | replace('{level}', skill.level | string) }}">{% for i in range(10) %}<i{% if i < skill.level // 10 %} class="on"{% endif %}></i>{% endfor %}</span>
           </div>
           <p class="muted small">{{ skill.keywords | join(" · ") }}</p>
         </div>
@@ -160,11 +167,11 @@
       </div>
     </section>
 
-    <section class="section wrap" id="edukacja">
-      <h2><span class="mono accent">04.</span> edukacja i certyfikaty</h2>
+    <section class="section wrap" id="{{ t.id_education }}">
+      <h2><span class="mono accent">04.</span> {{ t.education_title }}</h2>
       <div class="columns">
         <div>
-          <h3 class="col-title mono muted">edukacja</h3>
+          <h3 class="col-title mono muted">{{ t.education }}</h3>
           <ul class="plain-list">
             {% for edu in education %}
             <li>
@@ -176,11 +183,11 @@
           </ul>
         </div>
         <div>
-          <h3 class="col-title mono muted">certyfikaty</h3>
+          <h3 class="col-title mono muted">{{ t.certificates }}</h3>
           <ul class="plain-list">
             {% for cert in certs %}
             <li>
-              <p class="mono muted small">{{ cert.date | month_year }}</p>
+              <p class="mono muted small">{{ cert.date | month_year(lang) }}</p>
               <p class="strong">{{ cert.title }}</p>
               <p class="muted">{{ cert.issuer }}</p>
             </li>
@@ -190,20 +197,20 @@
       </div>
     </section>
 
-    <section class="section wrap contact" id="kontakt">
-      <h2><span class="mono accent">05.</span> kontakt</h2>
-      <p class="lead">Masz pomysł, projekt albo pytanie? Napisz — odpowiadam.</p>
+    <section class="section wrap contact" id="{{ t.id_contact }}">
+      <h2><span class="mono accent">05.</span> {{ t.contact_title }}</h2>
+      <p class="lead">{{ t.contact_lead }}</p>
       <a class="contact__mail" href="mailto:{{ profile.email }}">{{ profile.email }} <span class="arrow" aria-hidden="true">→</span></a>
       <ul class="links">
         <li><a href="{{ profile.linkedin }}" target="_blank" rel="noopener">{{ icon("linkedin") }} linkedin <span class="arrow" aria-hidden="true">→</span></a></li>
         <li><a href="{{ profile.github }}" target="_blank" rel="noopener">{{ icon("github") }} github <span class="arrow" aria-hidden="true">→</span></a></li>
         <li><a href="{{ profile.newsletter }}" target="_blank" rel="noopener">{{ icon("mail") }} newsletter <span class="arrow" aria-hidden="true">→</span></a></li>
-        <li><a href="{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} cv (pdf) <span class="arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="{{ root }}{{ cv_file }}" download="CV_Tomasz_Koralewski.pdf">{{ icon("download") }} {{ t.cv_link }} <span class="arrow" aria-hidden="true">→</span></a></li>
       </ul>
     </section>
   </main>
 
-  <dialog class="lightbox" id="lightbox" aria-label="Galeria zrzutów ekranu">
+  <dialog class="lightbox" id="lightbox" aria-label="{{ t.gallery_label }}">
     <div class="lightbox__frame">
       <figure class="lightbox__figure">
         <img class="lightbox__img" id="lightbox-img" alt="">
@@ -212,15 +219,15 @@
           <span class="mono muted" id="lightbox-counter"></span>
         </figcaption>
       </figure>
-      <button class="lightbox__btn lightbox__close" id="lightbox-close" type="button" aria-label="Zamknij">{{ icon("close") }}</button>
-      <button class="lightbox__btn lightbox__nav lightbox__nav--prev" id="lightbox-prev" type="button" aria-label="Poprzedni zrzut">{{ icon("prev") }}</button>
-      <button class="lightbox__btn lightbox__nav lightbox__nav--next" id="lightbox-next" type="button" aria-label="Następny zrzut">{{ icon("next") }}</button>
+      <button class="lightbox__btn lightbox__close" id="lightbox-close" type="button" aria-label="{{ t.close }}">{{ icon("close") }}</button>
+      <button class="lightbox__btn lightbox__nav lightbox__nav--prev" id="lightbox-prev" type="button" aria-label="{{ t.prev }}">{{ icon("prev") }}</button>
+      <button class="lightbox__btn lightbox__nav lightbox__nav--next" id="lightbox-next" type="button" aria-label="{{ t.next }}">{{ icon("next") }}</button>
     </div>
   </dialog>
 
   <footer class="footer wrap">
-    <p class="mono muted small">© {{ year }} {{ profile.name | lower }} · statyczny html z pythona i jinja</p>
-    <a class="mono small" href="#top">do góry ↑</a>
+    <p class="mono muted small">© {{ year }} {{ profile.name | lower }} · {{ t.footer }}</p>
+    <a class="mono small" href="#top">{{ t.to_top }}</a>
   </footer>
 </body>
 </html>
