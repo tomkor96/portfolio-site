@@ -70,7 +70,7 @@
       <p class="lead">{{ profile.about }}</p>
 
       <p class="status"><span class="dot" aria-hidden="true"></span>{{ t.now }}: {{ profile.status }}</p>
-      <p class="newsletter">{{ t.newsletter_before }} <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> {{ t.newsletter_after }}<span data-latest-issue="short" hidden> · <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">{{ t.latest_issue }} <span data-latest-number></span> <span class="arrow" aria-hidden="true">→</span></a></span></p>
+      <p class="newsletter">{{ t.newsletter_before }} <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> {{ t.newsletter_after }}{% if lang == "pl" %}<span data-latest-issue="short" hidden> · <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">{{ t.latest_issue }} <span data-latest-number></span> <span class="arrow" aria-hidden="true">→</span></a></span>{% endif %}</p>
 
       <div class="cta">
         <a class="btn btn--primary" href="mailto:{{ profile.email }}">{{ icon("mail") }} {{ t.write_to_me }}</a>
@@ -109,7 +109,8 @@
             {% if project.get("address") %}<p class="mono muted small">{% if project.get("offline") %}<s>{{ project.get("address") | replace("https://", "") | trim("/") }}</s> · {{ t.offline_note }}{% else %}{{ project.get("address") | replace("https://", "") | trim("/") }}{% endif %}</p>{% endif %}
           </header>
           <p>{{ project.description }}</p>
-          {% if project.get("address") == profile.newsletter %}
+          {# Issues are written in Polish, so the latest-issue link only makes sense on the PL page. #}
+          {% if project.get("address") == profile.newsletter and lang == "pl" %}
           <a class="latest-issue" data-latest-issue="full" href="{{ profile.newsletter }}" target="_blank" rel="noopener" hidden>
             <span class="latest-issue__label mono"><span data-latest-number></span> · {{ t.latest_issue }}<span data-latest-date></span></span>
             <span class="latest-issue__title"><span data-latest-title></span> <span class="arrow" aria-hidden="true">→</span></span>

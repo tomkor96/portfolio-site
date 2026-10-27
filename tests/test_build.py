@@ -180,6 +180,8 @@ def test_english_page_has_no_polish_ui(dist):
     assert '<html lang="en">' in html
     for label in ("napisz do mnie", "doświadczenie", "umiejętności", "obecnie", "Zrzut ekranu"):
         assert label not in html
+    # The newsletter's issues are Polish: no latest-issue link on the English page.
+    assert "data-latest-issue" not in html
 
 
 def test_years_since():
