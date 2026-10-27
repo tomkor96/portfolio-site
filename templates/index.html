@@ -63,7 +63,7 @@
       <p class="lead">{{ profile.about }}</p>
 
       <p class="status"><span class="dot" aria-hidden="true"></span>teraz: {{ profile.status }}</p>
-      <p class="newsletter">co dwa tygodnie wysyłam <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> — newsletter o ekosystemie pythona</p>
+      <p class="newsletter">co dwa tygodnie wysyłam <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">python digest polska <span class="arrow" aria-hidden="true">→</span></a> — newsletter o ekosystemie pythona<span data-latest-issue="short" hidden> · <a href="{{ profile.newsletter }}" target="_blank" rel="noopener">ostatnie wydanie <span data-latest-number></span> <span class="arrow" aria-hidden="true">→</span></a></span></p>
 
       <div class="cta">
         <a class="btn btn--primary" href="mailto:{{ profile.email }}">{{ icon("mail") }} napisz do mnie</a>
@@ -90,7 +90,7 @@
         {% for project in projects %}
         <article class="card{% if project.get("featured") %} card--featured{% endif %}{% if project.get("offline") %} card--offline{% endif %}">
           <header class="card__head">
-            {% if project.get("featured") %}<span class="badge badge--live"><span class="live-dot" aria-hidden="true"></span>live</span>{% endif %}
+            {% if project.get("featured") %}<span class="badge badge--status" data-live-url="{{ project.address }}" hidden><span class="live-dot" aria-hidden="true"></span><span data-live-label>live</span></span>{% endif %}
             {% if project.get("offline") %}<span class="badge badge--offline"><span class="offline-dot" aria-hidden="true"></span>offline</span>{% endif %}
             <h3>
               {% if project.get("address") and not project.get("offline") %}
@@ -102,6 +102,12 @@
             {% if project.get("address") %}<p class="mono muted small">{% if project.get("offline") %}<s>{{ project.get("address") | replace("https://", "") | trim("/") }}</s> · aplikacja już nie działa{% else %}{{ project.get("address") | replace("https://", "") | trim("/") }}{% endif %}</p>{% endif %}
           </header>
           <p>{{ project.description }}</p>
+          {% if project.get("address") == profile.newsletter %}
+          <a class="latest-issue" data-latest-issue="full" href="{{ profile.newsletter }}" target="_blank" rel="noopener" hidden>
+            <span class="latest-issue__label mono"><span data-latest-number></span> · ostatnie wydanie<span data-latest-date></span></span>
+            <span class="latest-issue__title"><span data-latest-title></span> <span class="arrow" aria-hidden="true">→</span></span>
+          </a>
+          {% endif %}
           {% if project.get("access_on_request") %}
           <p class="access-note">{{ icon("mail") }}<span>Aplikacja jest prywatna — chcesz konto? <a href="mailto:{{ profile.email }}?subject={{ ("Dostęp: " ~ project.title) | urlencode }}">napisz maila <span class="arrow" aria-hidden="true">→</span></a></span></p>
           {% endif %}

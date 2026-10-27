@@ -41,6 +41,11 @@ uv run pytest                                  # tests/test_build.py
   (it appears twice: under `prefers-color-scheme` and under `[data-theme="light"]`).
 - New-tab links carry `rel="noopener"`. Don't add runtime dependencies without asking.
 
+- "live" badges and the latest Python Digest issue come from `/live/live.json`, written on the
+  server by `scripts/live_status.py` (cron, stdlib only, must run on the server's Python 3.12).
+  Its HTML parser is tested against `tests/fixtures/pythondigest-home.html`; refresh the fixture
+  when the newsletter's home page markup changes. Tests never hit the network.
+
 ## Workflow
 
 - `main` changes only through PRs from `feat/*`, `fix/*` or `chore/*`; the guard hook blocks pushes

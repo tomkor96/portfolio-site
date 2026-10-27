@@ -53,6 +53,24 @@ clean up: `docker image prune -f` and `docker builder prune -f --filter until=16
 `git checkout <previous sha>` on the server, rebuild as in step 3, then `git checkout main` once a
 fix is merged. The site is stateless, so a rollback never loses data.
 
+## Live status cron (one-time setup, then only check it)
+
+`scripts/live_status.py` (system `python3`, stdlib only) checks the projects and the latest Python
+Digest issue and writes `runtime/live.json`, bind-mounted into the container at `/live/`. Set up once:
+
+```sh
+mkdir -p /root/apps/portfolio-site/runtime
+cat > /etc/cron.d/portfolio-site <<'CRON'
+# Portfolio: project status + latest Python Digest issue for the "live" badges
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * root cd /root/apps/portfolio-site && /usr/bin/flock -n /run/portfolio-live.lock /usr/bin/python3 scripts/live_status.py >> /var/log/portfolio-live.log 2>&1
+CRON
+cd /root/apps/portfolio-site && python3 scripts/live_status.py --verbose
+```
+
+Verify: `curl -s https://tkoralewski.toadres.pl/live/live.json` shows a fresh `checked_at`. The log
+gets lines only on warnings (an app unreachable, the issue block not found).
+
 ## One-time switch from Streamlit (first deploy of the static site)
 
 Until this is done the reverse proxy points at the old Streamlit container. Skip the section once
@@ -81,5 +99,8 @@ Until this is done the reverse proxy points at the old Streamlit container. Skip
   recreated container never needs an nginx reload.
 - The same server runs home-library (`/root/apps/home-library`, has its own `/deploy`), Python
   Digest Polska (`pdp-web`, `pdp-db`) and `sqlite-web`. Don't touch their containers.
+- `/etc/cron.d/portfolio-site` runs `scripts/live_status.py` every 5 minutes (log
+  `/var/log/portfolio-live.log`); `runtime/` is not in git. A missing or stale `live.json` (>30 min)
+  hides the badges instead of showing a false "live".
 - The portfolio container is read-only (`read_only: true`, `/tmp` as tmpfs) and listens on 8080 as
   a non-root user; logs are capped at 3 × 10 MB.
