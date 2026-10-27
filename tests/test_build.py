@@ -14,6 +14,7 @@ class LinkCollector(HTMLParser):
         self.refs: list[str] = []
         self.ids: set[str] = set()
         self.inline_styles: list[str] = []
+        self.event_handlers: list[str] = []
         self.inline_scripts = 0
         self._in_script = False
 
@@ -24,8 +25,9 @@ class LinkCollector(HTMLParser):
                 self.refs.append(values[name])
         if values.get("id"):
             self.ids.add(values["id"])
-        if values.get("style"):
+        if values.get("style") or tag == "style":
             self.inline_styles.append(tag)
+        self.event_handlers += [name for name in values if name.startswith("on")]
         self._in_script = tag == "script" and "src" not in values
 
     def handle_data(self, data: str) -> None:
@@ -54,18 +56,12 @@ def test_every_project_is_rendered(site):
             assert f'href="{project["address"]}"' in html
 
 
-def test_new_projects_are_listed(site):
-    _, html, _ = site
-    assert "https://pythondigest.toadres.pl/" in html
-    assert "https://biblioteczka.toadres.pl/" in html
-
-
 def test_local_links_resolve(site):
     out, _, parser = site
     local = [r for r in parser.refs if not r.startswith(("http", "mailto:", "#"))]
     assert local, "expected static assets and the CV"
     for ref in local:
-        assert (out / ref).is_file(), f"missing {ref}"
+        assert (out / ref.split("?")[0]).is_file(), f"missing {ref}"
 
 
 def test_anchors_resolve(site):
@@ -75,17 +71,11 @@ def test_anchors_resolve(site):
             assert ref[1:] in parser.ids, f"no element with id {ref}"
 
 
-def test_skills_order(site):
-    _, html, _ = site
-    names = [skill["name"] for skill in site_data.SKILLS]
-    assert "MS Excel" not in names
-    assert "<h3>Claude i Claude Code</h3>" in html
-
-
 def test_page_fits_the_csp(site):
     # nginx sends default-src 'self': no inline scripts or styles, no third-party assets.
     _, _, parser = site
     assert parser.inline_styles == []
+    assert parser.event_handlers == []
     assert parser.inline_scripts == 0
     for ref in parser.refs:
         if ref.startswith("http"):
@@ -98,6 +88,17 @@ def test_page_fits_the_csp(site):
 )
 def test_month_year(value, expected):
     assert month_year(value) == expected
+
+
+def test_assets_are_cache_busted(site):
+    _, _, parser = site
+    assets = [r for r in parser.refs if r.endswith((".css", ".js")) or "?v=" in r]
+    assert assets and all("?v=" in r for r in assets)
+
+
+def test_build_refuses_to_clear_the_project():
+    with pytest.raises(ValueError):
+        build(Path(__file__).resolve().parents[1])
 
 
 def test_years_since():

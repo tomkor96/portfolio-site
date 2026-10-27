@@ -81,7 +81,7 @@ function protectedPushReason(command, cwd) {
 				.split(':')
 				.pop()
 				.replace(/^refs\/heads\//, '');
-			const target = dest === 'HEAD' ? currentBranch() : dest;
+			const target = dest === 'HEAD' || dest === '@' ? currentBranch() : dest;
 			if (PROTECTED.has(target)) return `pushes to "${target}"`;
 		}
 	}

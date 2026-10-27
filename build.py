@@ -2,6 +2,7 @@
 
 import argparse
 import datetime as dt
+import hashlib
 import logging
 import shutil
 import sys
@@ -11,7 +12,7 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError
 
 import data
 
-ROOT = Path(__file__).parent
+ROOT = Path(__file__).resolve().parent
 MONTHS = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"]
 
 logger = logging.getLogger("build")
@@ -34,6 +35,12 @@ def years_since(value: str, today: dt.date | None = None) -> int:
     today = today or dt.date.today()
     years = today.year - start.year - ((today.month, today.day) < (start.month, start.day))
     return max(1, years)
+
+
+def asset_url(path: str) -> str:
+    """Append a content hash so browsers refetch a changed asset despite the long cache."""
+    digest = hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:10]
+    return f"{path}?v={digest}"
 
 
 def build_context() -> dict:
@@ -62,7 +69,11 @@ def build(out: Path) -> Path:
         lstrip_blocks=True,
     )
     env.filters["month_year"] = month_year
+    env.globals["asset_url"] = asset_url
 
+    out = out.resolve()
+    if out == ROOT or out in ROOT.parents:
+        raise ValueError(f"refusing to clear {out}: it contains the project")
     if out.exists():
         shutil.rmtree(out)
     shutil.copytree(ROOT / "static", out / "static")
@@ -82,7 +93,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     try:
         page = build(args.out)
-    except (TemplateError, OSError, KeyError) as exc:
+    except (TemplateError, OSError, KeyError, ValueError) as exc:
         logger.error("build failed: %s", exc)
         return 1
     logger.info("built %s", page)

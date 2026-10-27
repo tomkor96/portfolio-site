@@ -11,9 +11,9 @@
   <meta property="og:description" content="{{ profile.role }}. {{ profile.tagline }}">
   <meta property="og:type" content="website">
   <link rel="icon" href="static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="static/style.css">
-  <script src="static/theme.js"></script>
-  <script src="static/main.js" defer></script>
+  <link rel="stylesheet" href="{{ asset_url('static/style.css') }}">
+  <script src="{{ asset_url('static/theme.js') }}"></script>
+  <script src="{{ asset_url('static/main.js') }}" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">przejdź do treści</a>

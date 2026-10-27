@@ -1,4 +1,4 @@
-PROFILE: dict[str, str] = {
+PROFILE: dict[str, str | list[str]] = {
     "name": "Tomasz Koralewski",
     "role": "Inżynier ds. danych produktowych",
     "location": "Polska, Tarnowskie Góry",
@@ -55,7 +55,7 @@ EDUCATION: list[dict[str, str]] = [
 ]
 
 
-EXPERIENCE: list[dict[str, str]] = [
+EXPERIENCE: list[dict[str, str | list[str]]] = [
     {
         "job_title": "Inżynier ds. danych produktowych",
         "company": "Senetic Global Services",

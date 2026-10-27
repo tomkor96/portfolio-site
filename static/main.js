@@ -28,7 +28,7 @@ nav.addEventListener("click", (event) => {
   if (event.target.closest("a")) setNav(false);
 });
 
-// Highlight the nav link of the section in view.
+// Highlight the nav link of the section in view; the hero (#top) has no link and clears it.
 const links = new Map([...nav.querySelectorAll("a")].map((a) => [a.hash.slice(1), a]));
 const observer = new IntersectionObserver(
   (entries) => {
@@ -40,7 +40,7 @@ const observer = new IntersectionObserver(
   },
   { rootMargin: "-45% 0px -50% 0px" },
 );
-links.forEach((_, id) => {
+["top", ...links.keys()].forEach((id) => {
   const section = document.getElementById(id);
   if (section) observer.observe(section);
 });
