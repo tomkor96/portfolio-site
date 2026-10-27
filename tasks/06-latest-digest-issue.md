@@ -1,6 +1,6 @@
 # 06 — Link to the latest Python Digest Polska issue
 
-PR 2 · Status: in review
+PR 2 · Status: done (PR #7)
 
 ## Goal
 

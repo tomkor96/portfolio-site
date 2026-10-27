@@ -1,6 +1,6 @@
 # 01 — Lighter screenshots
 
-PR 1 · Status: in review
+PR 1 · Status: done (PR #5)
 
 ## Goal
 

@@ -1,4 +1,4 @@
-"""Render the portfolio from data.py and templates/ into a static site in dist/."""
+"""Render the portfolio from data.py and templates/ into dist/: PL at /, EN at /en/."""
 
 import argparse
 import datetime as dt
@@ -14,22 +14,38 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError
 
 import data
+from texts import MONTHS, TECH_LABELS, TEXTS
 
 ROOT = Path(__file__).resolve().parent
-MONTHS = ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"]
+LANGUAGES = ("pl", "en")
 
 logger = logging.getLogger("build")
 
 
-def month_year(value: str | None) -> str:
+def localize(value, lang: str):
+    """Resolve {"pl": ..., "en": ...} values anywhere in a data structure to one language."""
+    if isinstance(value, dict):
+        if set(value) == set(LANGUAGES):
+            return value[lang]
+        return {key: localize(item, lang) for key, item in value.items()}
+    if isinstance(value, list):
+        return [localize(item, lang) for item in value]
+    return value
+
+
+def month_year(value: str | None, lang: str = "pl") -> str:
     """Format "2024-08-01" as "sie 2024"; a bare year stays as it is, None means ongoing."""
     if not value:
-        return "obecnie"
+        return TEXTS[lang]["present"]
     try:
         date = dt.date.fromisoformat(value)
     except ValueError:
         return value
-    return f"{MONTHS[date.month - 1]} {date.year}"
+    return f"{MONTHS[lang][date.month - 1]} {date.year}"
+
+
+def tech_label(name: str, lang: str = "pl") -> str:
+    return TECH_LABELS.get(lang, {}).get(name, name)
 
 
 def slug(value: str) -> str:
@@ -53,9 +69,8 @@ def asset_url(path: str) -> str:
     return f"{path}?v={digest}"
 
 
-def person_json_ld() -> str:
+def person_json_ld(profile: dict) -> str:
     """schema.org Person for search engines; "</" is escaped so the data can't close the tag."""
-    profile = data.PROFILE
     person = {
         "@context": "https://schema.org",
         "@type": "Person",
@@ -69,18 +84,24 @@ def person_json_ld() -> str:
     return json.dumps(person, ensure_ascii=False).replace("</", r"<\/")
 
 
-def build_context() -> dict:
-    """Everything the templates read; projects marked featured come first."""
-    projects = sorted(data.PROJECTS, key=lambda p: not p.get("featured", False))
+def build_context(lang: str) -> dict:
+    """Everything the templates read for one language; projects marked featured come first."""
+    profile = localize(data.PROFILE, lang)
+    projects = sorted(localize(data.PROJECTS, lang), key=lambda p: not p.get("featured", False))
     return {
-        "profile": data.PROFILE,
-        "experience": data.EXPERIENCE,
-        "education": data.EDUCATION,
-        "skills": data.SKILLS,
-        "certs": data.CERTS,
+        "lang": lang,
+        "t": TEXTS[lang],
+        "texts": TEXTS,
+        # Relative prefix from the page to the site root (static/, the CV).
+        "root": "" if lang == "pl" else "../",
+        "profile": profile,
+        "experience": localize(data.EXPERIENCE, lang),
+        "education": localize(data.EDUCATION, lang),
+        "skills": localize(data.SKILLS, lang),
+        "certs": localize(data.CERTS, lang),
         "projects": projects,
         "cv_file": Path(data.PROFILE["cv_path"]).name,
-        "json_ld": person_json_ld(),
+        "json_ld": person_json_ld(profile),
         "tech_years": years_since(data.EXPERIENCE[0]["start_date"]),
         "year": dt.date.today().year,
     }
@@ -97,6 +118,7 @@ def build(out: Path) -> Path:
     )
     env.filters["month_year"] = month_year
     env.filters["slug"] = slug
+    env.filters["tech_label"] = tech_label
     env.globals["asset_url"] = asset_url
 
     out = out.resolve()
@@ -109,9 +131,12 @@ def build(out: Path) -> Path:
     cv = ROOT / data.PROFILE["cv_path"]
     shutil.copy2(cv, out / cv.name)
 
-    page = out / "index.html"
-    page.write_text(env.get_template("index.html").render(build_context()), encoding="utf-8")
-    return page
+    template = env.get_template("index.html")
+    for lang in LANGUAGES:
+        page = out / TEXTS[lang]["path"].strip("/") / "index.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(template.render(build_context(lang)), encoding="utf-8")
+    return out / "index.html"
 
 
 def main() -> int:

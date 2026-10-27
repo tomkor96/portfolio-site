@@ -1,4 +1,4 @@
-"""Render static/og.png (1200×630), the link-preview card for LinkedIn, Slack and messengers.
+"""Render static/og.png and og-en.png (1200×630), the link-preview cards.
 
 Run after changing the name, tagline or portrait; the output is committed.
 """
@@ -12,9 +12,10 @@ from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import data  # noqa: E402
+from build import LANGUAGES, localize  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "static" / "og.png"
+STATIC = ROOT / "static"
 PORTRAIT = ROOT / "static" / "img" / "portrait.webp"
 
 WIDTH, HEIGHT = 1200, 630
@@ -73,7 +74,7 @@ def portrait(size: int) -> Image.Image:
     return photo
 
 
-def render() -> Image.Image:
+def render(lang: str) -> Image.Image:
     image = Image.new("RGB", (WIDTH, HEIGHT), BG)
     draw = ImageDraw.Draw(image)
     dotted_grid(draw)
@@ -89,7 +90,7 @@ def render() -> Image.Image:
     photo = portrait(size)
     image.paste(photo, (center[0] - size // 2, center[1] - size // 2), photo)
 
-    profile = data.PROFILE
+    profile = localize(data.PROFILE, lang)
     left = 72
     draw.text((left, 70), "tkoralewski", font=font(MONO_BOLD, 30), fill=TEXT)
     brand_width = draw.textlength("tkoralewski", font=font(MONO_BOLD, 30))
@@ -114,11 +115,13 @@ def render() -> Image.Image:
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     try:
-        render().save(OUT, "PNG", optimize=True)
+        for lang in LANGUAGES:
+            out = STATIC / ("og.png" if lang == "pl" else f"og-{lang}.png")
+            render(lang).save(out, "PNG", optimize=True)
+            logger.info("wrote %s", out)
     except (OSError, UnidentifiedImageError, KeyError) as exc:
         logger.error("og image failed: %s", exc)
         return 1
-    logger.info("wrote %s", OUT)
     return 0
 
 

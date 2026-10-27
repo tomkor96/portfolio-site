@@ -1,6 +1,6 @@
 # 03 — Photo in the hero
 
-PR 1 · Status: in review
+PR 1 · Status: done (PR #5)
 
 ## Goal
 

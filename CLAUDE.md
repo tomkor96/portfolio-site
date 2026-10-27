@@ -33,8 +33,11 @@ uv run pytest                                  # tests/test_build.py
   `static/img/<name>.webp` in `data.py` (cards load `-thumb.webp` automatically). Profile, tagline
   or portrait change → rerun `scripts/og_image.py`. Pillow is a dev dependency only.
 - Planned work lives in `tasks/NN-*.md`; update the task's status when its PR merges.
-- Content changes go to `data.py` only; templates hold layout and fixed UI labels. UI text is
-  Polish and headings are lowercase on purpose.
+- Two languages: PL at `/`, EN at `/en/`. Content lives only in `data.py`; a value that differs
+  per language is `{"pl": ..., "en": ...}` (both keys, a test enforces it). Fixed UI labels live in
+  `texts.py` (`TEXTS[lang]`, same keys in both). Tech chip names stay Polish (they give the color
+  class); English labels go to `texts.TECH_LABELS`. Headings are lowercase on purpose.
+- Paths in templates are prefixed with `{{ root }}` ("" or "../") so they work from `/en/`.
 - Jinja runs with `StrictUndefined`: read optional keys with `.get()` (`address`, `photo_urls`,
   `featured`, `end_date`). `"featured": True` puts a project first with the "live" badge.
 - Theme colors are CSS custom properties: change both the dark defaults and the light block

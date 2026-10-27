@@ -1,6 +1,6 @@
 # 05 — "live" badge from the real application status
 
-PR 2 · Status: in review
+PR 2 · Status: done (PR #7)
 
 ## Goal
 

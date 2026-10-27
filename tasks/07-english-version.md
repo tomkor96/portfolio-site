@@ -1,6 +1,6 @@
 # 07 — English version
 
-PR 3 · Status: todo
+PR 3 · Status: in review
 
 ## Goal
 

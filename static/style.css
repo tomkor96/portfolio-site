@@ -247,6 +247,12 @@ ol {
   }
 }
 
+.lang-switch {
+  font: 600 0.72rem var(--mono);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
 .nav-toggle {
   display: none;
 }
