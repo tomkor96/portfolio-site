@@ -8,6 +8,9 @@ services:
       - reverse-proxy-network
     restart: unless-stopped
     read_only: true
+    volumes:
+      # live.json from scripts/live_status.py (cron on the host); missing file = badges stay hidden
+      - ./runtime:/usr/share/nginx/html/live:ro
     tmpfs:
       - /tmp
     security_opt:

@@ -186,3 +186,51 @@ if (matchMedia("(hover: hover)").matches && !reducedMotion.matches) {
     });
   });
 }
+// Live status and the latest newsletter issue, from /live/live.json (cron on the server, every
+// 5 minutes). No file, a failed request or stale data leaves everything hidden: never a false "live".
+const STALE_AFTER_MS = 30 * 60 * 1000;
+
+function minutesAgo(date) {
+  const minutes = Math.max(0, Math.round((Date.now() - date) / 60000));
+  return minutes === 0 ? "przed chwilą" : `${minutes} min temu`;
+}
+
+function showStatus(badge, check, checkedAt) {
+  const label = badge.querySelector("[data-live-label]");
+  badge.classList.add(check.up ? "badge--live" : "badge--down");
+  label.textContent = check.up ? "live" : "niedostępna";
+  badge.title = `sprawdzono ${minutesAgo(checkedAt)}${check.up ? ` · ${check.ms} ms` : ""}`;
+  badge.hidden = false;
+}
+
+function showLatestIssue(issue) {
+  document.querySelectorAll("[data-latest-issue]").forEach((el) => {
+    const link = el.matches("a") ? el : el.querySelector("a");
+    link.href = issue.url;
+    link.title = issue.title;
+    el.querySelectorAll("[data-latest-number]").forEach((n) => {
+      n.textContent = issue.number ? `#${issue.number}` : "";
+    });
+    el.querySelectorAll("[data-latest-title]").forEach((t) => (t.textContent = issue.title));
+    el.querySelectorAll("[data-latest-date]").forEach((d) => {
+      d.textContent = issue.date ? ` · ${issue.date}` : "";
+    });
+    el.hidden = false;
+  });
+}
+
+fetch("/live/live.json", { cache: "no-store" })
+  .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+  .then((live) => {
+    const checkedAt = new Date(live.checked_at);
+    if (!(Date.now() - checkedAt < STALE_AFTER_MS)) return;
+    document.querySelectorAll("[data-live-url]").forEach((badge) => {
+      const check = live.projects?.[badge.dataset.liveUrl];
+      if (check) showStatus(badge, check, checkedAt);
+    });
+    const newsletter = Object.values(live.projects ?? {}).find((p) => p.latest_issue);
+    if (newsletter) showLatestIssue(newsletter.latest_issue);
+  })
+  .catch(() => {
+    // No status file (local preview, CI) or a network error: badges simply stay hidden.
+  });

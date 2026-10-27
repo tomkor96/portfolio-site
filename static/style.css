@@ -767,6 +767,62 @@ a:hover .arrow {
   color: var(--accent);
 }
 
+/* Live status (main.js reads /live/live.json): hidden until a fresh check says up or down */
+.badge[hidden],
+[data-latest-issue][hidden] {
+  display: none;
+}
+
+.badge--down {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.5rem;
+  border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+  background: color-mix(in srgb, #ef4444 12%, transparent);
+  color: #ef4444;
+  letter-spacing: 0.12em;
+}
+
+.badge--down .live-dot,
+.badge--down .live-dot::after {
+  background: #ef4444;
+  animation: none;
+}
+
+/* Latest Python Digest issue on the newsletter card */
+.latest-issue {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  background: var(--surface-2);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.latest-issue:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+  transform: translateX(2px);
+}
+
+.latest-issue__label {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.latest-issue__title {
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 /* Projects that are no longer running */
 .card--offline {
   border-style: dashed;
