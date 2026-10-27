@@ -1,6 +1,6 @@
 # 07 — English version
 
-PR 3 · Status: in review
+PR 3 · Status: done (PR #8; latest issue hidden on /en/ in PR #9)
 
 ## Goal
 

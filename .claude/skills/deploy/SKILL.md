@@ -95,6 +95,9 @@ Until this is done the reverse proxy points at the old Streamlit container. Skip
   (`docker run --rm --network reverse-proxy-network -v /root/apps/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro nginx:alpine nginx -t`),
   then `docker restart nginx-reverse-proxy`. The default `return 444` server block stays; change it
   only with the user's consent.
+- A new Mikrus subdomain (`mcp__mikrus__domains`, port 80) is validated against the bare IPv6,
+  which `return 444` drops, so adding one fails. With the user's consent: switch the default block
+  to `return 404`, restart, add the subdomain, restore `return 444`, restart (done for `tkstats`).
 - Upstreams are resolved per request (`resolver 127.0.0.11` + a variable in `proxy_pass`), so a
   recreated container never needs an nginx reload.
 - The same server runs home-library (`/root/apps/home-library`, has its own `/deploy`), Python
