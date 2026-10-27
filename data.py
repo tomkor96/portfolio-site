@@ -5,6 +5,7 @@ PROFILE: dict[str, str | list[str]] = {
     "email": "tomaszkoralewski1@gmail.com",
     "linkedin": "https://www.linkedin.com/in/tomasz-koralewski-a7233a154/",
     "github": "https://github.com/tomkor96",
+    "site_url": "https://tkoralewski.toadres.pl",
     "newsletter": "https://pythondigest.toadres.pl/",
     "cv_path": "docs/Tomasz_Koralewski_CV.pdf",
     "tagline": "dane. aplikacje. automatyzacja.",
@@ -229,8 +230,8 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "address": "https://pythondigest.toadres.pl/",
         "tech": ["Python", "Django", "PostgreSQL", "Docker", "AI"],
         "photo_urls": [
-            "static/img/python-digest-strona-glowna.png",
-            "static/img/python-digest-wydanie.png",
+            "static/img/python-digest-strona-glowna.webp",
+            "static/img/python-digest-wydanie.webp",
         ],
         "featured": True,
     },
@@ -241,8 +242,8 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "access_on_request": True,
         "tech": ["SvelteKit", "TypeScript", "SQLite", "Tailwind CSS", "Playwright", "Docker"],
         "photo_urls": [
-            "static/img/biblioteczka-zapowiedzi.png",
-            "static/img/biblioteczka-katalog.png",
+            "static/img/biblioteczka-zapowiedzi.webp",
+            "static/img/biblioteczka-katalog.webp",
         ],
         "featured": True,
     },
@@ -253,8 +254,8 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "offline": True,
         "tech": ["Python", "Django", "Tailwind CSS", "PostgreSQL"],
         "photo_urls": [
-            "static/img/zrzut-ekranu-2026-02-22-103539.png",
-            "static/img/zrzut-ekranu-2026-02-22-1036211.png",
+            "static/img/zrzut-ekranu-2026-02-22-103539.webp",
+            "static/img/zrzut-ekranu-2026-02-22-1036211.webp",
         ],
     },
     {
@@ -262,8 +263,8 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "description": """Projekt polegający na napisaniu systemu powiadomień z użyciem API aplikacji Too Good To Go. Aplikacja pozwala na zarządzanie konfiguracją skryptu z poziomu przeglądarki. Jest hostowana z użyciem Raspberry Pi.""",
         "tech": ["Python", "Streamlit", "Raspberry Pi"],
         "photo_urls": [
-            "static/img/zrzut-ekranu-2025-09-22-220324.png",
-            "static/img/zrzut-ekranu-2025-09-22-215653.png",
+            "static/img/zrzut-ekranu-2025-09-22-220324.webp",
+            "static/img/zrzut-ekranu-2025-09-22-215653.webp",
         ],
     },
     {
@@ -271,7 +272,7 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "description": "Aplikacja umożliwiająca śledzenie zmian cen produktów. Jeżeli cena spada poniżej zadeklarowanej przez użytkownika to wówczas otrzymuje on e-mail z powiadomieniem. Ceny pobierane są ze stron z użyciem web scrapingu.",
         "tech": ["Python", "Streamlit", "PostgreSQL", "Raspberry Pi"],
         "photo_urls": [
-            "static/img/zrzut-ekranu-2025-09-22-221224.png",
+            "static/img/zrzut-ekranu-2025-09-22-221224.webp",
         ],
     },
     {
@@ -279,8 +280,8 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "description": "Aplikacja umożliwiająca zbieranie informacji na temat podróży, takich jak miejsca, ceny lotów, ceny transportu na miejscu i inne. Aplikacja opiera się o Structured output i Web search z API OpenAI",
         "tech": ["Python", "Streamlit", "OpenAI API", "Raspberry Pi"],
         "photo_urls": [
-            "static/img/zrzut-ekranu-2025-09-23-212411.png",
-            "static/img/zrzut-ekranu-2025-09-23-212151.png",
+            "static/img/zrzut-ekranu-2025-09-23-212411.webp",
+            "static/img/zrzut-ekranu-2025-09-23-212151.webp",
         ],
     },
 ]

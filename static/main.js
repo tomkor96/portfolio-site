@@ -175,3 +175,14 @@ lightbox.addEventListener("touchend", (event) => {
   touchStartX = null;
   if (Math.abs(dx) > 50) showSlide(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
 });
+
+// Spotlight: cards and skill tiles track the cursor through --x/--y (CSSOM, so the CSP allows it).
+if (matchMedia("(hover: hover)").matches && !reducedMotion.matches) {
+  document.querySelectorAll(".card, .skill").forEach((el) => {
+    el.addEventListener("pointermove", (event) => {
+      const box = el.getBoundingClientRect();
+      el.style.setProperty("--x", `${event.clientX - box.left}px`);
+      el.style.setProperty("--y", `${event.clientY - box.top}px`);
+    });
+  });
+}

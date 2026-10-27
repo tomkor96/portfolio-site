@@ -25,6 +25,11 @@ container answers on `portfolio:8080`, health check at `/healthz`).
 | `docs/`                  | the CV PDF, copied next to `index.html` on build          |
 | `nginx.conf`             | in-container server: CSP, caching, `/healthz`             |
 
+Images: sources live in `assets/` (screenshots in `assets/img/*.png`, the portrait in
+`assets/photo-source.jpg`); `uv run python scripts/optimize_images.py` exports WebP into
+`static/img/` (full size + `-thumb`) and `uv run python scripts/og_image.py` renders the
+link-preview card `static/og.png`. Both outputs are committed. Planned work: `tasks/`.
+
 A new project: add a dict to `PROJECTS` in `data.py` (`"featured": True` puts it first with a
 "live" badge); screenshots go to `static/img/` and are referenced as `static/img/<file>`.
 
