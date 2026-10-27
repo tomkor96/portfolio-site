@@ -8,7 +8,7 @@ PROFILE: dict[str, str | list[str]] = {
     "newsletter": "https://pythondigest.toadres.pl/",
     "cv_path": "docs/Tomasz_Koralewski_CV.pdf",
     "tagline": "dane. aplikacje. automatyzacja.",
-    "about": "Mam na imię Tomek i lubię rozwiązywać problemy z użyciem technologii. Na co dzień pobieram, czyszczę i porządkuję dane produktowe dla e-commerce, a po godzinach buduję własne aplikacje — od newslettera o Pythonie po katalog domowej biblioteki.",
+    "about": "Mam na imię Tomek i lubię rozwiązywać problemy z użyciem technologii. Na co dzień pobieram, czyszczę i porządkuję dane produktowe dla e-commerce, a po godzinach buduję własne aplikacje.",
     "status": "Senetic · inżynier ds. danych produktowych",
     "skills": [
         "Python",
@@ -238,6 +238,7 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "title": "Domowa biblioteka",
         "description": "Aplikacja PWA do katalogowania domowej kolekcji książek i gier planszowych: miejsca na półkach, skanowanie kodów ISBN/EAN, automatyczne pobieranie metadanych i okładek, wypożyczenia, oceny oraz zapowiedzi wydawnicze z powiadomieniami e-mail.",
         "address": "https://biblioteczka.toadres.pl/",
+        "access_on_request": True,
         "tech": ["SvelteKit", "TypeScript", "SQLite", "Tailwind CSS", "Playwright", "Docker"],
         "photo_urls": [
             "static/img/biblioteczka-zapowiedzi.png",
