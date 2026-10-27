@@ -4,8 +4,10 @@ import argparse
 import datetime as dt
 import hashlib
 import logging
+import re
 import shutil
 import sys
+import unicodedata
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError
@@ -27,6 +29,13 @@ def month_year(value: str | None) -> str:
     except ValueError:
         return value
     return f"{MONTHS[date.month - 1]} {date.year}"
+
+
+def slug(value: str) -> str:
+    """CSS class name for a label: "Tailwind CSS" -> "tailwind-css", "Obsługa" -> "obsluga"."""
+    ascii_text = unicodedata.normalize("NFKD", value.replace("ł", "l").replace("Ł", "L"))
+    ascii_text = ascii_text.encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", ascii_text.lower()).strip("-")
 
 
 def years_since(value: str, today: dt.date | None = None) -> int:
@@ -69,6 +78,7 @@ def build(out: Path) -> Path:
         lstrip_blocks=True,
     )
     env.filters["month_year"] = month_year
+    env.filters["slug"] = slug
     env.globals["asset_url"] = asset_url
 
     out = out.resolve()

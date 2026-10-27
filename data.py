@@ -249,6 +249,7 @@ PROJECTS: list[dict[str, str | bool | list[str]]] = [
         "title": "Aplikacja Django do oglądania streamów z wydarzeń sportowych oraz śledzenia wyników na żywo",
         "description": "Aplikacja umożliwiająca oglądanie streamów z wydarzeń sportowych oraz śledzenie wyników na żywo. Aplikacja została stworzona z użyciem frameworka Django i wykorzystuje API do pobierania danych o wydarzeniach sportowych.",
         "address": "https://mecze.byst.re/",
+        "offline": True,
         "tech": ["Python", "Django", "Tailwind CSS", "PostgreSQL"],
         "photo_urls": [
             "static/img/zrzut-ekranu-2026-02-22-103539.png",

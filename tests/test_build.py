@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 import data as site_data
-from build import build, month_year, years_since
+from build import build, month_year, slug, years_since
 
 
 class LinkCollector(HTMLParser):
@@ -52,7 +52,7 @@ def test_every_project_is_rendered(site):
     _, html, _ = site
     for project in site_data.PROJECTS:
         assert project["title"] in html
-        if project.get("address"):
+        if project.get("address") and not project.get("offline"):
             assert f'href="{project["address"]}"' in html
 
 
@@ -108,6 +108,25 @@ def test_assets_are_cache_busted(site):
 def test_build_refuses_to_clear_the_project():
     with pytest.raises(ValueError):
         build(Path(__file__).resolve().parents[1])
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("Tailwind CSS", "tailwind-css"),
+        ("Obsługa klienta", "obsluga-klienta"),
+        ("API OpenAI", "api-openai"),
+    ],
+)
+def test_slug(value, expected):
+    assert slug(value) == expected
+
+
+def test_offline_project_is_not_linked(site):
+    _, html, _ = site
+    for project in site_data.PROJECTS:
+        if project.get("offline"):
+            assert f'href="{project["address"]}"' not in html
 
 
 def test_years_since():
