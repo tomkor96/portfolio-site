@@ -1,6 +1,6 @@
 # 08 — Private analytics (GoatCounter)
 
-PR 4 · Status: in review
+PR 4 · Status: done (PR #9)
 
 ## Goal
 
