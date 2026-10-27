@@ -1,0 +1,31 @@
+# GoatCounter: cookie-free analytics for the portfolio. Dashboard at https://tkstats.toadres.pl
+# (nginx-proxy server block); the portfolio's nginx forwards /count here, so the site's CSP stays 'self'.
+# Run on the server from this directory: docker compose up -d
+services:
+  goatcounter:
+    image: arp242/goatcounter:2.6
+    container_name: goatcounter
+    command: ["serve", "-automigrate", "-listen", ":8080", "-tls", "http"]
+    volumes:
+      - goatcounter-data:/home/goatcounter/goatcounter-data
+    networks:
+      - reverse-proxy-network
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  goatcounter-data:
+
+networks:
+  reverse-proxy-network:
+    external: true

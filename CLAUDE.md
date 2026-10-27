@@ -49,6 +49,9 @@ uv run pytest                                  # tests/test_build.py
   Its HTML parser is tested against `tests/fixtures/pythondigest-home.html`; refresh the fixture
   when the newsletter's home page markup changes. Tests never hit the network.
 
+- Analytics: `main.js` posts to same-origin `/count`, which the container's nginx forwards to
+  GoatCounter (`ops/goatcounter`). Don't add third-party analytics scripts; events use `countEvent`.
+
 ## Workflow
 
 - `main` changes only through PRs from `feat/*`, `fix/*` or `chore/*`; the guard hook blocks pushes

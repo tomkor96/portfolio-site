@@ -1,6 +1,6 @@
 # 08 — Private analytics (GoatCounter)
 
-PR 4 · Status: todo
+PR 4 · Status: in review
 
 ## Goal
 
@@ -8,14 +8,14 @@ Cookie-free visit stats: pages, referrers, CV downloads, outbound clicks to proj
 
 ## Plan
 
-- GoatCounter in its own container on jeff190 (`/root/apps/goatcounter`, SQLite volume, ~20–30 MB
-  RAM), on `reverse-proxy-network`; dashboard at `stats.tkoralewski.toadres.pl` (to confirm).
-- Counting without breaking the CSP: the portfolio's nginx proxies `/count` to GoatCounter and
-  serves `count.js` from `static/` → everything stays `'self'`.
-- Events: CV download, project link clicks, lightbox opens (`goatcounter.count({event: true})`).
-- No IP storage beyond GoatCounter defaults; mention analytics in the footer.
-
-## Open
-
-- Subdomain spelling (answer was "statstkoralewski.toadres.pl") and how `*.toadres.pl` DNS is
-  managed — needed before the nginx server block.
+- GoatCounter 2.6 in its own container (`ops/goatcounter/compose.yaml`, run from that directory
+  on jeff190; SQLite in the `goatcounter-data` volume, `mem_limit: 128m`), on `reverse-proxy-network`.
+- Dashboard: `https://tkstats.toadres.pl` — free Mikrus subdomain (labels are 4–12 characters, so
+  the requested "statstkoralewski" didn't fit; the user picked `tkstats`) → port 80 → nginx-proxy
+  server block → `goatcounter:8080`.
+- Counting without breaking the CSP: the portfolio's nginx proxies `/count` to GoatCounter with
+  `Host: tkstats.toadres.pl`; `main.js` sends hits with `sendBeacon` — no third-party script.
+- Pageviews plus events: `cv-download`, `mailto`, `gallery: <project>`, `out: <host/path>`.
+  Skipped off HTTPS (local previews) and when the browser sends Do Not Track.
+- Footer mentions cookie-free stats.
+- Admin account: created on the server; the password is in a root-only file (never printed).
