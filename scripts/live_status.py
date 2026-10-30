@@ -99,13 +99,18 @@ def parse_latest_issue(html: str, base_url: str) -> dict | None:
     }
 
 
+def check_url(project: dict) -> str:
+    """The URL that tells whether a project is up: its own health endpoint when it has one."""
+    return str(project.get("status_url") or project.get("address") or "")
+
+
 def collect() -> dict:
     projects = {}
     for project in data.PROJECTS:
         url = str(project.get("address") or "")
         if not url or project.get("offline"):
             continue
-        status, body, elapsed = fetch(url)
+        status, body, elapsed = fetch(check_url(project))
         projects[url] = {"up": is_up(status), "status": status, "ms": elapsed}
         if url == data.PROFILE["newsletter"] and is_up(status):
             latest = parse_latest_issue(body.decode("utf-8", "replace"), url)

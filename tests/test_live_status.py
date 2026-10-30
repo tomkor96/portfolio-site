@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from scripts.live_status import is_up, parse_latest_issue, write_atomic
+from scripts.live_status import check_url, is_up, parse_latest_issue, write_atomic
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -34,3 +34,9 @@ def test_write_atomic_replaces_the_file(tmp_path):
     write_atomic(target, {"a": 2})
     assert json.loads(target.read_text(encoding="utf-8")) == {"a": 2}
     assert [p.name for p in target.parent.iterdir()] == ["live.json"]
+
+
+def test_check_url_prefers_the_health_endpoint() -> None:
+    site = "https://example.org/"
+    assert check_url({"address": site}) == site
+    assert check_url({"address": site, "status_url": f"{site}health"}) == f"{site}health"
