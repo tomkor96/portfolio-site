@@ -310,6 +310,8 @@ PROJECTS: list[dict] = [
             "en": "A PWA for cataloguing a home collection of books and board games: shelf locations, ISBN/EAN scanning, automatic metadata and cover lookup, loans, ratings, and upcoming releases with email alerts.",
         },
         "address": "https://biblioteczka.toadres.pl/",
+        # Checked every 5 minutes: one light request instead of the redirect to the login page.
+        "status_url": "https://biblioteczka.toadres.pl/health",
         "access_on_request": True,
         "tech": ["SvelteKit", "TypeScript", "SQLite", "Tailwind CSS", "Playwright", "Docker"],
         "photo_urls": [
