@@ -154,7 +154,7 @@ EXPERIENCE: list[dict] = [
                 "Using keywords that help clients' websites get found in search engines",
             ],
         },
-        "tech": ["SEO", "Content Marketing", "Google Analytics"],
+        "tech": ["SEO", "Content Marketing"],
     },
     {
         "job_title": {

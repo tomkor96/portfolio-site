@@ -733,10 +733,6 @@ a:hover .arrow {
   --chip: #e5b800;
 }
 
-.chip--google-analytics {
-  --chip: #e37400;
-}
-
 .chip--seo {
   --chip: #14b8a6;
 }
