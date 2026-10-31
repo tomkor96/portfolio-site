@@ -653,6 +653,22 @@ a:hover .arrow {
   --chip: #4fa3d1;
 }
 
+.chip--mysql {
+  --chip: #3e8fb0;
+}
+
+.chip--sql-server {
+  --chip: #cc2927;
+}
+
+.chip--fastapi {
+  --chip: #05998b;
+}
+
+.chip--claude-code {
+  --chip: #d97757;
+}
+
 .chip--sql {
   --chip: #f29111;
 }
