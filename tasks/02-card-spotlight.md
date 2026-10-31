@@ -1,6 +1,6 @@
 # 02 — Card spotlight that follows the cursor
 
-PR 1 · Status: done (PR #5)
+PR 1 · Status: removed — shipped in PR #5, taken out at the user's request (they didn't like it)
 
 ## Goal
 
